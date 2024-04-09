@@ -18,10 +18,10 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         format_sql: true
   datasource:
-    url: jdbc:postgresql://ep-bold-block-a4wmt5zw-pooler.us-east-1.aws.neon.tech:5432/verceldb?user=default&password=vf1p3nPRuibL
-    username: default
+    url: jdbc:postgresql://localhost:5432/postgres?user=mjwdbadmin&password=vf1p3nPRuibL
+    username: mjwdbadmin
     password: vf1p3nPRuibL
-    hostname: ep-bold-block-a4wmt5zw-pooler.us-east-1.aws.neon.tech
+    hostname: localhost
     port: 5432
     database: verceldb
     driverClassName: org.postgresql.Driver
