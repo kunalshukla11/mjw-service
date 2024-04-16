@@ -18,6 +18,8 @@
         <spring-modulith.version>1.1.2</spring-modulith.version>
         <org.mapstruct.version>1.5.5.Final</org.mapstruct.version>
         <lombok-mapstruct-binding-version>0.2.0</lombok-mapstruct-binding-version>
+        <puppyCrawl.checkstyle.verion>10.15.0</puppyCrawl.checkstyle.verion>
+        <checkstyle-maven-plugin.version>3.3.1</checkstyle-maven-plugin.version>
     </properties>
     <dependencies>
         <dependency>
@@ -51,6 +53,11 @@
             <groupId>org.mapstruct</groupId>
             <artifactId>mapstruct</artifactId>
             <version>${org.mapstruct.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.puppycrawl.tools</groupId>
+            <artifactId>checkstyle</artifactId>
+            <version>${puppyCrawl.checkstyle.verion}</version>
         </dependency>
 
         <dependency>
@@ -121,6 +128,39 @@
                         <!-- other annotation processors -->
                     </annotationProcessorPaths>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <version>3.3.1</version>
+                <configuration>
+                    <configLocation>checkstyle.xml</configLocation>
+                    <includeTestSourceDirectory>true</includeTestSourceDirectory>
+                    <!--  <suppressionsLocation>checkstyle-suppressions.xml</suppressionsLocation>-->
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>validate</id>
+                        <phase>validate</phase>
+                        <configuration>
+                            <inputEncoding>UTF-8</inputEncoding>
+                            <consoleOutput>true</consoleOutput>
+                            <failsOnError>true</failsOnError>
+                            <failOnViolation>true</failOnViolation>
+                            <!--                            <suppressionsLocation>checkstyle-suppressions.xml</suppressionsLocation>-->
+                        </configuration>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <dependencies>
+                    <dependency>
+                        <groupId>com.puppycrawl.tools</groupId>
+                        <artifactId>checkstyle</artifactId>
+                        <version>${puppyCrawl.checkstyle.verion}</version>
+                    </dependency>
+                </dependencies>
             </plugin>
         </plugins>
     </build>

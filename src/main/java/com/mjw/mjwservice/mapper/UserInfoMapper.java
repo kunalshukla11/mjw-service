@@ -7,10 +7,7 @@ import org.mapstruct.factory.Mappers;
 
 @Mapper
 public interface UserInfoMapper {
-    UserInfoMapper INSTANCE = Mappers.getMapper(UserInfoMapper.class);
+  UserInfoMapper INSTANCE = Mappers.getMapper(UserInfoMapper.class);
 
-    UserInfoDatabaseImpl toDatabase(UserInfo userInfo);
-
-
-
+  UserInfoDatabaseImpl toDatabase(UserInfo userInfo);
 }

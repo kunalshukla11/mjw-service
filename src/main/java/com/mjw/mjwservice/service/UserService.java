@@ -4,8 +4,7 @@ import com.mjw.mjwservice.users.UserInfo;
 
 public interface UserService {
 
-    UserInfo registerUser(UserInfo userInfo);
+  UserInfo registerUser(UserInfo userInfo);
 
-    UserInfo loginUser(UserInfo userInfo);
-
+  UserInfo loginUser(UserInfo userInfo);
 }
