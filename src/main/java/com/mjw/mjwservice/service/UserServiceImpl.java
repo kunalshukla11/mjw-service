@@ -1,29 +1,24 @@
 package com.mjw.mjwservice.service;
 
 import com.mjw.mjwservice.entity.UserInfoDatabaseImpl;
+import com.mjw.mjwservice.mapper.UserInfoMapper;
 import com.mjw.mjwservice.repository.UserRepository;
 import com.mjw.mjwservice.users.UserInfo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+
+import java.util.function.Function;
 
 @Component
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
   private final UserRepository userRepository;
+  private final UserInfoMapper userInfoMapper;
 
   @Override
   public UserInfo registerUser(final UserInfo userInfo) {
-    // TODO: create Mapper to this
-    final UserInfoDatabaseImpl build =
-        UserInfoDatabaseImpl.builder()
-            .name(userInfo.name())
-            .email(userInfo.email())
-            .password(userInfo.password())
-            .firstName(userInfo.firstName())
-            .lastName(userInfo.lastName())
-            .build();
-
+    final UserInfoDatabaseImpl build = userInfoMapper.toDatabase(userInfo);
     userRepository.save(build);
     return userInfo;
   }
