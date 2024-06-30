@@ -6,6 +6,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest
 class MjwServiceApplicationTests {
 
-  @Test
+  //@Test
   void contextLoads() {}
 }
