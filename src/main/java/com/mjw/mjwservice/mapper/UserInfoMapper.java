@@ -5,7 +5,7 @@ import com.mjw.mjwservice.users.UserInfo;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
-@Mapper
+@Mapper(componentModel = "spring")
 public interface UserInfoMapper {
   UserInfoMapper INSTANCE = Mappers.getMapper(UserInfoMapper.class);
 
