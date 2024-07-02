@@ -1,5 +1,4 @@
-package com.mjw.mjwservice.entity;
-
+package com.mjw.mjwservice.user.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -20,23 +19,23 @@ import lombok.NoArgsConstructor;
 @Table(name = "USER_INFO")
 public class UserInfoDatabaseImpl {
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Column(name = "ID")
-  private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "ID")
+    private Long id;
 
-  @Column(name = "NAME")
-  private String name;
+    @Column(name = "NAME")
+    private String name;
 
-  @Column(name = "EMAIL")
-  private String email;
+    @Column(name = "EMAIL")
+    private String email;
 
-  @Column(name = "PASSWORD")
-  private String password;
+    @Column(name = "PASSWORD")
+    private String password;
 
-  @Column(name = "FIRST_NAME")
-  private String firstName;
+    @Column(name = "FIRST_NAME")
+    private String firstName;
 
-  @Column(name = "LAST_NAME")
-  private String lastName;
+    @Column(name = "LAST_NAME")
+    private String lastName;
 }
