@@ -1,4 +1,9 @@
 package com.mjw.mjwservice.validation.model;
 
-public record Violation(String field, String message) {
+import lombok.Builder;
+
+@Builder
+public record Violation(String field,
+                        String message) {
+
 }

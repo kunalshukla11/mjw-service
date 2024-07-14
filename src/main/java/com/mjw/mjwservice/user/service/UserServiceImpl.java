@@ -1,25 +1,26 @@
 package com.mjw.mjwservice.user.service;
 
-import com.mjw.mjwservice.user.entity.UserInfoDatabaseImpl;
 import com.mjw.mjwservice.user.mapper.UserInfoMapper;
 import com.mjw.mjwservice.user.model.UserInfo;
 import com.mjw.mjwservice.user.repository.UserRepository;
-import com.mjw.mjwservice.validation.service.GenericValidationService;
+import com.mjw.mjwservice.validation.service.ValidationOrchestrator;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
-@Component
+import static com.mjw.mjwservice.validation.model.ValidationMode.REGISTER_USER;
+
+@Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final UserInfoMapper userInfoMapper;
-    private final GenericValidationService<UserInfo> validationService;
+    private final ValidationOrchestrator validationOrchestrator;
 
     @Override
     public UserInfo registerUser(final UserInfo userInfo) {
-        final UserInfoDatabaseImpl build = userInfoMapper.toDatabase(userInfo);
-        userRepository.save(build);
+        validationOrchestrator.validate(userInfo, REGISTER_USER);
+        userRepository.save(userInfoMapper.toDatabase(userInfo));
         return userInfo;
     }
 
@@ -27,4 +28,5 @@ public class UserServiceImpl implements UserService {
     public UserInfo loginUser(final UserInfo userInfo) {
         return null;
     }
+
 }

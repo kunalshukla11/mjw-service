@@ -38,4 +38,5 @@ public class UserInfoDatabaseImpl {
 
     @Column(name = "LAST_NAME")
     private String lastName;
+
 }

@@ -24,4 +24,5 @@ public class UserController {
         final UserInfo registerUserInfo = userService.registerUser(userInfo);
         return ResponseEntity.ok(registerUserInfo);
     }
+
 }

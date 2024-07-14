@@ -7,4 +7,5 @@ public interface UserService {
     UserInfo registerUser(UserInfo userInfo);
 
     UserInfo loginUser(UserInfo userInfo);
+
 }
