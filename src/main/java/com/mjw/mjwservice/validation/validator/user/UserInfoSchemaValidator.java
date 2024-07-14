@@ -2,9 +2,11 @@ package com.mjw.mjwservice.validation.validator.user;
 
 import com.mjw.mjwservice.user.model.UserInfo;
 import com.mjw.mjwservice.user.model.Validatable;
+import com.mjw.mjwservice.validation.UserLogin;
 import com.mjw.mjwservice.validation.model.UserRegister;
 import com.mjw.mjwservice.validation.model.ValidationMode;
 import com.mjw.mjwservice.validation.model.Violation;
+import com.mjw.mjwservice.validation.model.context.ValidationContext;
 import com.mjw.mjwservice.validation.validator.RuleValidator;
 import jakarta.validation.Validator;
 import org.springframework.stereotype.Component;
@@ -22,7 +24,7 @@ public class UserInfoSchemaValidator implements RuleValidator<UserInfo> {
     BiFunction<UserInfo, ValidationMode, List<Violation>> validateSchema = (userInfo, validationMode) -> {
         final Class<?> validationGroup = switch (validationMode) {
             case REGISTER_USER -> UserRegister.class;
-            default -> throw new IllegalArgumentException("validation mode not supported: " + validationMode);
+            case LOGIN_USER -> UserLogin.class;
         };
         return validator.validate(userInfo, validationGroup)
                 .stream()
@@ -38,7 +40,8 @@ public class UserInfoSchemaValidator implements RuleValidator<UserInfo> {
     }
 
     @Override
-    public List<Violation> validate(final Validatable userInfo, final ValidationMode validationMode) {
+    public List<Violation> validate(final Validatable userInfo, final ValidationMode validationMode,
+                                    final ValidationContext<? extends Validatable> context) {
         return validateSchema.apply((UserInfo) userInfo, validationMode);
     }
 

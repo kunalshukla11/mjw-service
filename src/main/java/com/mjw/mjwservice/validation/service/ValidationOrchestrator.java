@@ -5,6 +5,8 @@ import com.mjw.mjwservice.user.model.Validatable;
 import com.mjw.mjwservice.validation.model.ErrorResponse;
 import com.mjw.mjwservice.validation.model.ValidationMode;
 import com.mjw.mjwservice.validation.model.Violation;
+import com.mjw.mjwservice.validation.model.context.ValidationContext;
+import com.mjw.mjwservice.validation.service.impl.DefaultContextBuilder;
 import com.mjw.mjwservice.validation.service.impl.DefaultValidationModeIdentifier;
 import com.mjw.mjwservice.validation.service.impl.DefaultValidationService;
 import lombok.RequiredArgsConstructor;
@@ -21,27 +23,23 @@ public class ValidationOrchestrator {
     private final DefaultValidationService<? extends Validatable> defaultValidationService;
     private final List<ValidationModeIdentifier<? extends Validatable>> validationModeIdentifiers;
     private final DefaultValidationModeIdentifier<? extends Validatable> defaultValidationModeIdentifier;
+    private final List<ValidationContextBuilder> validationContextBuilders;
+    private final DefaultContextBuilder defaultContextBuilder;
 
-    public void validate(final Validatable validatable) {
+
+    public <T extends Validatable> void validate(final T validatable,
+                                                 final ValidationMode validationMode) {
         final ValidationService<? extends Validatable> validationService = getValidationService(validatable);
-
-        final ValidationModeIdentifier<? extends Validatable> validationModeIdentifier =
-                getValidationModeIdentifier(validatable);
-        final Set<Violation> violations = validationService.validate(validatable,
-                validationModeIdentifier.identify(validatable));
-
+        final ValidationContextBuilder validationContextBuilder =
+                getValidationContextBuilder(validatable);
+        final ValidationContext<? extends Validatable> context = validationContextBuilder.build(validatable, null,
+                validationMode);
+        final Set<Violation> violations = validationService.validate(validatable, validationMode, context);
         if (!violations.isEmpty()) {
             throw new ValidationException("Validation failed", violations);
         }
     }
 
-    public void validate(final Validatable validatable, final ValidationMode validationMode) {
-        final ValidationService<? extends Validatable> validationService = getValidationService(validatable);
-        final Set<Violation> violations = validationService.validate(validatable, validationMode);
-        if (!violations.isEmpty()) {
-            throw new ValidationException("Validation failed", violations);
-        }
-    }
 
     public ErrorResponse validateWithResponse(final Validatable validatable) {
         return ErrorResponse.builder().build();
@@ -52,6 +50,13 @@ public class ValidationOrchestrator {
                 .filter(v -> validatable.getClass().equals(v.supports()))
                 .findFirst()
                 .orElse(defaultValidationService);
+    }
+
+    private ValidationContextBuilder getValidationContextBuilder(final Validatable validatable) {
+        return validationContextBuilders.stream()
+                .filter(v -> validatable.getClass().equals(v.supports()))
+                .findFirst()
+                .orElse(defaultContextBuilder);
     }
 
     private ValidationModeIdentifier<? extends Validatable> getValidationModeIdentifier(final Validatable validatable) {
