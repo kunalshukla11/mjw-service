@@ -4,6 +4,7 @@ import com.mjw.mjwservice.user.model.Validatable;
 import com.mjw.mjwservice.validation.model.ValidationMode;
 import com.mjw.mjwservice.validation.model.Violation;
 import com.mjw.mjwservice.validation.model.context.ValidationContext;
+import com.mjw.mjwservice.validation.service.ValidationContextBuilder;
 import com.mjw.mjwservice.validation.service.ValidationService;
 import com.mjw.mjwservice.validation.validator.RuleValidator;
 import lombok.RequiredArgsConstructor;
@@ -23,22 +24,28 @@ import static com.mjw.mjwservice.validation.validator.RuleValidator.Type.SCHEMA;
 public class DefaultValidationService<T extends Validatable> implements ValidationService<T> {
 
     private final List<RuleValidator<? extends Validatable>> ruleValidators;
+    private final List<ValidationContextBuilder> validationContextBuilders;
+    private final DefaultContextBuilder defaultContextBuilder;
 
 
     @Override
-    public Set<Violation> validate(final Validatable validatable, final ValidationMode validationMode,
-                                   final ValidationContext<? extends Validatable> context) {
+    public Set<Violation> validate(final Validatable validatable, final ValidationMode validationMode) {
 
 
         final Set<RuleValidator<? extends Validatable>> applicableValidators = ruleValidators.stream()
                 .filter(v -> v.supports().contains(validationMode))
                 .collect(Collectors.toSet());
 
-        return Optional.of(validate(validatable, validationMode, applicableValidators, SCHEMA, context))
+        final ValidationContextBuilder validationContextBuilder = getValidationContextBuilder(validatable);
+
+        return Optional.of(validate(validatable, validationMode, applicableValidators, SCHEMA, null))
                 .filter(CollectionUtils::isNotEmpty)
-                .orElse(validate(validatable, validationMode, applicableValidators, BUSINESS, context));
-
-
+                .orElseGet(() -> {
+                    final ValidationContext<? extends Validatable> context =
+                            validationContextBuilder.build(validatable, null,
+                            validationMode);
+                    return validate(validatable, validationMode, applicableValidators, BUSINESS, context);
+                });
     }
 
     private Set<Violation> validate(final Validatable validatable, final ValidationMode validationMode,
@@ -52,6 +59,13 @@ public class DefaultValidationService<T extends Validatable> implements Validati
                 .flatMap(List::stream)
                 .collect(Collectors.toSet());
 
+    }
+
+    private ValidationContextBuilder getValidationContextBuilder(final Validatable validatable) {
+        return validationContextBuilders.stream()
+                .filter(v -> validatable.getClass().equals(v.supports()))
+                .findFirst()
+                .orElse(defaultContextBuilder);
     }
 
 }

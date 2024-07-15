@@ -24,9 +24,6 @@ public class UserInfoDatabaseImpl {
     @Column(name = "ID")
     private Long id;
 
-    @Column(name = "NAME")
-    private String name;
-
     @Column(name = "EMAIL")
     private String email;
 
