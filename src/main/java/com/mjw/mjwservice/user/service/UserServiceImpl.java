@@ -26,7 +26,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserInfo loginUser(final UserInfo userInfo) {
-        return null;
+        System.out.println("in logingin");
+        return userInfo;
     }
 
 }

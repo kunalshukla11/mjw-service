@@ -3,7 +3,7 @@ package com.mjw.mjwservice.validation.validator.user;
 import com.mjw.mjwservice.user.model.UserInfo;
 import com.mjw.mjwservice.user.model.Validatable;
 import com.mjw.mjwservice.validation.UserLogin;
-import com.mjw.mjwservice.validation.model.UserRegister;
+import com.mjw.mjwservice.validation.model.group.UserRegister;
 import com.mjw.mjwservice.validation.model.ValidationMode;
 import com.mjw.mjwservice.validation.model.Violation;
 import com.mjw.mjwservice.validation.model.context.ValidationContext;

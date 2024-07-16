@@ -1,6 +1,6 @@
 package com.mjw.mjwservice.validation;
 
-import com.mjw.mjwservice.validation.model.ValidationGroup;
+import com.mjw.mjwservice.validation.model.group.ValidationGroup;
 
 public interface UserLogin extends ValidationGroup {
 
