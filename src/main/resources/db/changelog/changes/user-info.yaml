@@ -1,0 +1,44 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-user-info-table
+      author: your_name
+      changes:
+        - createTable:
+            tableName: USER_INFO
+            schemaName: MJW_SERVICE
+            columns:
+              - column:
+                  name: id
+                  type: int
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: email
+                  type: varchar(50)
+                  constraints:
+                    unique: true
+              - column:
+                  name: password
+                  type: varchar(500)
+              - column:
+                  name: first_name
+                  type: varchar(100)
+              - column:
+                  name: last_name
+                  type: varchar(100)
+        - createIndex:
+            tableName: USER_INFO
+            schemaName: MJW_SERVICE
+            indexName: USER_INFO_EMAIL
+            columns:
+              - column:
+                  name: email
+            constraintName: USER_INFO_EMAIL
+            constraintType: unique
+
+
+
+
+
+

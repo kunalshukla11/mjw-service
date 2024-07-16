@@ -15,8 +15,8 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity(name = "USER")
-@Table(name = "USER_INFO")
+@Entity(name = "USER_INFO")
+@Table(name = "USER_INFO", schema = "MJW_SERVICE")
 public class UserInfoDatabaseImpl {
 
     @Id

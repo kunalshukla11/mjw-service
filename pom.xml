@@ -59,7 +59,10 @@
             <artifactId>checkstyle</artifactId>
             <version>${puppyCrawl.checkstyle.verion}</version>
         </dependency>
-
+        <dependency>
+            <groupId>org.liquibase</groupId>
+            <artifactId>liquibase-core</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
