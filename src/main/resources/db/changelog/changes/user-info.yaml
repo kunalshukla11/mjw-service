@@ -27,6 +27,12 @@ databaseChangeLog:
               - column:
                   name: last_name
                   type: varchar(100)
+              - column:
+                  name: created_at
+                  type: timestamp
+              - column:
+                  name: updated_at
+                  type: timestamp
         - createIndex:
             tableName: USER_INFO
             schemaName: MJW_SERVICE

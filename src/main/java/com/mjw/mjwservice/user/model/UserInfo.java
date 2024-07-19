@@ -16,7 +16,8 @@ public record UserInfo(
         String email,
 
         @Pattern(regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=!])(?=\\S+$).{8,}$",
-                message = "Must contain one uppercase, one lowercase, one number and one special character", groups = {UserRegister.class})
+                message = "Must contain one uppercase, one lowercase, one number and one special character",
+                groups = {UserRegister.class})
         @NotNull(message = "password cannot be null", groups = {UserRegister.class, UserLogin.class})
         String password,
 

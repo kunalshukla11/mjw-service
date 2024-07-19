@@ -18,10 +18,10 @@ import java.util.Set;
 public class UserExistsValidator implements RuleValidator<UserInfo> {
 
     @Override
-    public List<Violation> validate(Validatable t, ValidationMode validationMode, ValidationContext<?
+    public List<Violation> validate(final Validatable t, final ValidationMode validationMode, final ValidationContext<?
             extends Validatable> context) {
         final UserInfoValidationContext userInfoValidationContext = (UserInfoValidationContext) context;
-       return Optional.ofNullable(userInfoValidationContext.userInfoDatabase())
+        return Optional.ofNullable(userInfoValidationContext.userInfoDatabase())
                 .map(userInfoDatabase -> List.of(Violation.builder()
                         .field("email")
                         .message("user already exists")

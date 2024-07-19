@@ -6,6 +6,6 @@ public interface UserService {
 
     UserInfo registerUser(UserInfo userInfo);
 
-    UserInfo loginUser(UserInfo userInfo);
+    Long loginUser(UserInfo userInfo);
 
 }
