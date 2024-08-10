@@ -31,5 +31,9 @@ spring:
   jackson:
     default-property-inclusion: NON_NULL
 
+security:
+  jwt:
+    secret-key: b0eb0e5901c834a70ec6f500007417664bbf43a1a1bc4fead3c01444def5d6a9
+    expiration-time: 86400000
 
 

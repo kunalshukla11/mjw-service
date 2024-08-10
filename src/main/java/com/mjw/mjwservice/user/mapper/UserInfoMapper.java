@@ -12,4 +12,6 @@ public interface UserInfoMapper {
 
     UserInfoDatabaseImpl toDatabase(UserInfo userInfo);
 
+    UserInfo fromDatabase(UserInfoDatabaseImpl userInfoDatabase);
+
 }

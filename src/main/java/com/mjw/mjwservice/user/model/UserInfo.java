@@ -7,6 +7,7 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.Builder;
+import lombok.With;
 
 @Builder
 public record UserInfo(
@@ -19,6 +20,7 @@ public record UserInfo(
                 message = "Must contain one uppercase, one lowercase, one number and one special character",
                 groups = {UserRegister.class})
         @NotNull(message = "password cannot be null", groups = {UserRegister.class, UserLogin.class})
+        @With
         String password,
 
         @NotNull(message = "firstName cannot be null", groups = {UserRegister.class})
