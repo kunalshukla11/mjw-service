@@ -6,3 +6,4 @@ docker start postgres-container
 
 TODO- items
 LOW Centralize validations and implement AOP type validations, bifurcated validators
+LOW Implement two stage access tokens validation using https://vscode.dev/github/altunkan/auth-test-frontend and https://vscode.dev/github/altunkan/authentication-test
