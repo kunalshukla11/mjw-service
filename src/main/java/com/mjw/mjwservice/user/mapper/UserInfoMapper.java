@@ -14,4 +14,6 @@ public interface UserInfoMapper {
 
     UserInfo fromDatabase(UserInfoDatabaseImpl userInfoDatabase);
 
+    UserInfo.UserInfoSummery toUserSummery(UserInfoDatabaseImpl userInfoDatabase);
+
 }
