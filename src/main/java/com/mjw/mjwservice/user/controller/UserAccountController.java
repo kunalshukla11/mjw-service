@@ -1,7 +1,7 @@
 package com.mjw.mjwservice.user.controller;
 
 import com.mjw.mjwservice.user.model.UserInfo;
-import com.mjw.mjwservice.user.service.UserService;
+import com.mjw.mjwservice.user.service.UserAccountService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -9,15 +9,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/profile")
+@RequestMapping("/api/account")
 @RequiredArgsConstructor
-public class UserController {
+public class UserAccountController {
 
-    private final UserService userService;
+    private final UserAccountService userAccountService;
 
     @GetMapping("/me")
     public ResponseEntity<UserInfo.UserInfoSummery> me() {
-        return ResponseEntity.ok(userService.getUserProfile());
+        return ResponseEntity.ok(userAccountService.getUserProfile());
     }
 }
 

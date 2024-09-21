@@ -1,10 +1,9 @@
 package com.mjw.mjwservice.user.controller;
 
 import com.mjw.mjwservice.common.model.LoginResponse;
-import com.mjw.mjwservice.common.service.JwtService;
 import com.mjw.mjwservice.common.util.SecurityCipher;
 import com.mjw.mjwservice.user.model.UserInfo;
-import com.mjw.mjwservice.user.service.UserService;
+import com.mjw.mjwservice.user.service.UserAccountService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.ResponseEntity;
@@ -26,14 +25,13 @@ import org.springframework.web.bind.annotation.RestController;
 @Validated
 public class AuthController {
 
-    private final UserService userService;
-    private final JwtService jwtService;
+    private final UserAccountService userAccountService;
     private final AuthenticationManager authenticationManager;
 
     @PostMapping("/register")
     public ResponseEntity<LoginResponse> register(final @RequestBody UserInfo userInfo) {
         log.info("register user: {}", userInfo);
-        return userService.registerUser(userInfo);
+        return userAccountService.registerUser(userInfo);
     }
 
     @PostMapping("/login")
@@ -47,7 +45,7 @@ public class AuthController {
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         final String decryptedAccessToken = SecurityCipher.decrypt(accessToken);
-        return userService.login(userInfo, decryptedAccessToken);
+        return userAccountService.login(userInfo, decryptedAccessToken);
 
     }
 
