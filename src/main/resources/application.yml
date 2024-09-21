@@ -7,10 +7,6 @@ spring:
     problemDetails:
       enable: true
       defaultType: application/problem+json
-#  sql:
-#    init:
-#      mode: always
-#      schema-location: classpath:/schema.sql
 
   jpa:
     hibernate:
@@ -20,14 +16,8 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         format_sql: true
   datasource:
-    url: jdbc:postgresql://localhost:5432/postgres?user=mjwdbadmin&password=vf1p3nPRuibL
-    username: mjwdbadmin
-    password: vf1p3nPRuibL
-    hostname: localhost
-    port: 5432
-    database: verceldb
+    url: jdbc:postgresql://${DB_HOST:localhost}:5432/postgres?user=${POSTGRES_USER}&password=${POSTGRES_PASSWORD}
     driverClassName: org.postgresql.Driver
-
   jackson:
     default-property-inclusion: NON_NULL
 
@@ -35,5 +25,4 @@ security:
   jwt:
     secret-key: b0eb0e5901c834a70ec6f500007417664bbf43a1a1bc4fead3c01444def5d6a9
     expiration-time: 86400000
-
 

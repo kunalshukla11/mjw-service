@@ -167,7 +167,7 @@
                             <goal>check</goal>
                         </goals>
                         <configuration>
-                            <configLocation>checkstyle.xml</configLocation>
+                            <configLocation>src/main/resources/checkstyle.xml</configLocation>
                             <includeTestSourceDirectory>true</includeTestSourceDirectory>
                             <inputEncoding>UTF-8</inputEncoding>
                             <violationSeverity>warning</violationSeverity>

@@ -8,18 +8,19 @@ import com.mjw.mjwservice.validation.service.ValidationContextBuilder;
 import org.springframework.stereotype.Component;
 
 @Component
-public class DefaultContextBuilder implements ValidationContextBuilder {
+public class DefaultContextBuilder implements ValidationContextBuilder<Validatable> {
 
     @Override
-    public ValidationContext<Validatable> build(final Validatable validatable,
+
+    public ValidationContext build(final Validatable validatable,
                                                 final DefaultValidationContext defaultValidationContext,
                                                 final ValidationMode validationMode) {
-        return defaultValidationContext.withPayload(validatable);
+        return  defaultValidationContext.withPayload(validatable);
     }
 
     @Override
-    public Class<?> supports() {
-        return ValidationContext.class;
+    public Class<? extends Validatable> supportsType() {
+        return Validatable.class;
     }
 
 }

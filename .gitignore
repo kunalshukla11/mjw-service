@@ -31,3 +31,9 @@ build/
 
 ### VS Code ###
 .vscode/
+
+#### Tar files ####
+*.tar
+*.tar.gz
+*.tgz
+.env

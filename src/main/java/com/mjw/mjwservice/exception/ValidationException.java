@@ -1,20 +1,19 @@
 package com.mjw.mjwservice.exception;
 
-import com.mjw.mjwservice.validation.model.Violation;
+import com.mjw.mjwservice.validation.model.ValidationResponse;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-
-import java.util.Set;
 
 @Data
 @EqualsAndHashCode(callSuper = false)
 public class ValidationException extends RuntimeException {
 
-    private Set<Violation> violations;
 
-    public ValidationException(final String message, final Set<Violation> violations) {
+    private ValidationResponse validationResponse;
+
+    public ValidationException(final String message, final ValidationResponse validationResponse) {
         super(message);
-        this.violations = violations;
+        this.validationResponse = validationResponse;
     }
 
     public ValidationException(final String message) {

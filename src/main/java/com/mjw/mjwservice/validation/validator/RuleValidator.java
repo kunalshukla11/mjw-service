@@ -10,12 +10,14 @@ import java.util.Set;
 
 public interface RuleValidator<T> {
 
-    List<Violation> validate(Validatable t, ValidationMode validationMode,
-                             ValidationContext<? extends Validatable> context);
+    List<Violation> validate(T t, ValidationMode validationMode,
+                             ValidationContext context);
 
     Set<ValidationMode> supports();
 
-    default Type getType() {
+    Class<? extends Validatable> validatingClass();
+
+    default Type type() {
         return Type.BUSINESS;
     }
 

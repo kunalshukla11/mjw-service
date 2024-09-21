@@ -1,0 +1,42 @@
+services:
+  mjw_service:
+    image: mjw_service:1.0.0
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: mjw_service_container
+    environment:
+      DB_HOST: mjwdbvm.mjwsubnet.mjwvcn.oraclevcn.com
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    ports:
+      - "8080:8080"
+    networks:
+      - mjw_network
+
+  mjw_app:
+    image: mjw_app:1.0.0
+    container_name: mjw_app_container
+    build:
+      context: ../mjw-app
+      dockerfile: Dockerfile
+      args:
+        ENV_FILE: ${ENV_FILE:-.env}
+    depends_on:
+      - mjw_service
+    environment:
+      NODE_ENV: production
+    env_file:
+      # Specify the environment files as a list of strings
+      - path: .env
+        required: true
+      - path: .env.docker.mjwapp
+        required: false
+    ports:
+      - "3000:3000"
+    networks:
+      - mjw_network
+
+networks:
+  mjw_network:
+    driver: bridge
