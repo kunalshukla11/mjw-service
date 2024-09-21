@@ -9,6 +9,9 @@ import jakarta.validation.constraints.Pattern;
 import lombok.Builder;
 import lombok.With;
 
+import java.time.LocalDateTime;
+
+
 @Builder
 public record UserInfo(
         Long id,
@@ -26,6 +29,18 @@ public record UserInfo(
         @NotNull(message = "firstName cannot be null", groups = {UserRegister.class})
         String firstName,
 
-        String lastName) implements Validatable {
+        String lastName,
+        LocalDateTime createdAt,
+
+        LocalDateTime updatedAt) implements Validatable {
+
+    @Builder(toBuilder = true)
+    public record UserInfoSummery(
+            Long id,
+
+            String email,
+            String firstName) {
+
+    }
 
 }
