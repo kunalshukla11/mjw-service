@@ -21,7 +21,7 @@ import static com.mjw.mjwservice.validation.model.ValidationMode.REGISTER_USER;
 
 @Service
 @RequiredArgsConstructor
-public class UserServiceImpl implements UserService {
+public class UserAccountServiceImpl implements UserAccountService {
 
     private final UserRepository userRepository;
     private final UserInfoMapper userInfoMapper;
