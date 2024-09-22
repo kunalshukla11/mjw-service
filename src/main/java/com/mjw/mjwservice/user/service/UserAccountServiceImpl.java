@@ -12,6 +12,7 @@ import com.mjw.mjwservice.validation.service.ValidationOrchestrator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -79,8 +80,9 @@ public class UserAccountServiceImpl implements UserAccountService {
 
     @Override
     public UserInfo.UserInfoSummery getUserProfile() {
-        final UserInfoDatabaseImpl userInfoDatabase = (UserInfoDatabaseImpl) SecurityContextHolder.getContext()
-                .getAuthentication();
+
+        final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        final UserInfoDatabaseImpl userInfoDatabase = (UserInfoDatabaseImpl) authentication.getPrincipal();
 
         final UserInfoDatabaseImpl userInfoDatabase1 =
                 userRepository.findById(userInfoDatabase.getId()).orElseThrow(() -> new UsernameNotFoundException(

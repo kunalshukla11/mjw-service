@@ -21,6 +21,9 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Objects;
+import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
@@ -34,7 +37,11 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
                                     final @NonNull HttpServletResponse httpServletResponse,
                                     final @NonNull FilterChain filterChain) throws ServletException, IOException {
         try {
-            final String jwt = getJwtToken(httpServletRequest, true);
+            final String jwt = getJwtToken(httpServletRequest);
+            if (Objects.isNull(jwt)) {
+                filterChain.doFilter(httpServletRequest, httpServletResponse);
+                return;
+            }
             if (StringUtils.hasText(jwt) && tokenProvider.validateToken(jwt)) {
                 final String username = tokenProvider.getUsernameFromToken(jwt);
                 final UserDetails userDetails = userDetailsService.loadUserByUsername(username);
@@ -50,40 +57,26 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
         filterChain.doFilter(httpServletRequest, httpServletResponse);
     }
 
-    private String getJwtFromRequest(final HttpServletRequest request) {
-        final String bearerToken = request.getHeader("Authorization");
-        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
-            final String accessToken = bearerToken.substring(7);
-            if (accessToken == null) {
-                return null;
-            }
-
-            return SecurityCipher.decrypt(accessToken);
-        }
-        return null;
+    private Optional<String> getJwtFromRequest(final HttpServletRequest request) {
+        return Optional.ofNullable(request.getHeader("Authorization"))
+                .filter(bearerToken -> StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer "))
+                .map(bearerToken -> bearerToken.substring(7))
+                .map(SecurityCipher::decrypt);
     }
 
-    private String getJwtFromCookie(final HttpServletRequest request) {
-        final Cookie[] cookies = request.getCookies();
-        for (Cookie cookie : cookies) {
-            if (Token.TokenType.ACCESS.getDescription().equals(cookie.getName())) {
-                final String accessToken = cookie.getValue();
-                if (accessToken == null) {
-                    return null;
-                }
-
-                return SecurityCipher.decrypt(accessToken);
-            }
-        }
-        return null;
+    private Optional<String> getJwtFromCookie(final HttpServletRequest request) {
+        return Optional.ofNullable(request.getCookies())
+                .flatMap(cookies -> Arrays.stream(cookies)
+                        .filter(cookie -> Token.TokenType.ACCESS.getDescription().equals(cookie.getName()))
+                        .map(Cookie::getValue)
+                        .findFirst())
+                .map(SecurityCipher::decrypt);
     }
 
-    private String getJwtToken(final HttpServletRequest request, final boolean fromCookie) {
-        if (fromCookie) {
-            return getJwtFromCookie(request);
-        }
-
-        return getJwtFromRequest(request);
+    private String getJwtToken(final HttpServletRequest request) {
+        return getJwtFromCookie(request)
+                .or(() -> getJwtFromRequest(request))
+                .orElse(null);
     }
 
 }
