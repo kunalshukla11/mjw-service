@@ -11,6 +11,7 @@ import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -62,8 +63,6 @@ public class TokenProviderImpl implements TokenProvider {
     }
 
 
-
-
     @Override
     public String getUsernameFromToken(final String token) {
         final Claims claims = extractAllClaims(token);
@@ -79,9 +78,10 @@ public class TokenProviderImpl implements TokenProvider {
     @Override
     public boolean validateToken(final String token) {
         try {
-
-            Jwts.parserBuilder().setSigningKey(getSignInKey()).build().parse(token);
-            return true;
+            if (StringUtils.isNoneEmpty(token)) {
+                Jwts.parserBuilder().setSigningKey(getSignInKey()).build().parse(token);
+                return true;
+            }
         } catch (SignatureException ex) {
             ex.printStackTrace();
         } catch (MalformedJwtException ex) {

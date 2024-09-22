@@ -73,6 +73,7 @@ public class SecurityConfiguration {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource));
         return http.build();
     }
+
     //TODO Set Proper Cors Configuration so that only front can access it
 
     @Bean("corsConfigurationSource")

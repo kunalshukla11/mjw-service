@@ -25,7 +25,7 @@ public class UserInfoContextBuilder implements ValidationContextBuilder {
                                                           final ValidationMode validationMode) {
         final UserInfo userInfo = (UserInfo) validatable;
         final UserInfoDatabaseImpl userInfoDatabase = userRepository.findByEmail(userInfo.email())
-                .orElseThrow();
+                .orElse(null);
 
         return UserInfoValidationContext.builder().userInfoDatabase(userInfoDatabase).build();
     }
