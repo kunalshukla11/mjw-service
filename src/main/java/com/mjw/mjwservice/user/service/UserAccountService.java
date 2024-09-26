@@ -12,4 +12,6 @@ public interface UserAccountService {
 
     UserInfo.UserInfoSummery getUserProfile();
 
+    ResponseEntity<String> logout();
+
 }

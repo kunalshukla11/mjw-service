@@ -90,11 +90,20 @@ public class UserAccountServiceImpl implements UserAccountService {
         return userInfoMapper.toUserSummery(userInfoDatabase1);
     }
 
+    @Override
+    public ResponseEntity<String> logout() {
+        final HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.add(HttpHeaders.SET_COOKIE, cookieUtil.createAccessTokenCookie("", 0L).toString());
+        return ResponseEntity.ok().headers(httpHeaders).body("Logout successful. Tokens are removed from cookie.");
+    }
+
     private void addAccessTokenCookie(final HttpHeaders httpHeaders, final Token token) {
         httpHeaders.add(HttpHeaders.SET_COOKIE, cookieUtil.createAccessTokenCookie(token.tokenValue(),
                         token.duration())
                 .toString());
     }
+
+
 
 }
 
