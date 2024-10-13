@@ -7,10 +7,6 @@ spring:
     problemDetails:
       enable: true
       defaultType: application/problem+json
-#  sql:
-#    init:
-#      mode: always
-#      schema-location: classpath:/schema.sql
 
   jpa:
     hibernate:
