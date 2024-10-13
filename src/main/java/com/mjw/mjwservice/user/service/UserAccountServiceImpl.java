@@ -93,7 +93,7 @@ public class UserAccountServiceImpl implements UserAccountService {
     @Override
     public ResponseEntity<String> logout() {
         final HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.add(HttpHeaders.SET_COOKIE, cookieUtil.createAccessTokenCookie("", 0L).toString());
+        httpHeaders.add(HttpHeaders.SET_COOKIE, cookieUtil.deleteAccessTokenCookie().toString());
         return ResponseEntity.ok().headers(httpHeaders).body("Logout successful. Tokens are removed from cookie.");
     }
 

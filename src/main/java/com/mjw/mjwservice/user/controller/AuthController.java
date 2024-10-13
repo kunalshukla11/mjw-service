@@ -50,8 +50,9 @@ public class AuthController {
 
     }
 
-    @GetMapping("/logout")
+    @PostMapping("/logout")
     public ResponseEntity<String> logout() {
+        log.info("logout user");
         return userAccountService.logout();
     }
 
