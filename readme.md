@@ -3,14 +3,15 @@ docker run -itd \
   -e POSTGRES_PASSWORD=vf1p3nPRuibL \
   -p 5432:5432 \
   -v postgres-data:/var/lib/postgresql/data \
-  --network mjw_network \
-  --name postgres-container postgres
+  --name postgres-container postgres:17
 
 
 docker run -itd \
   --name mjw_service_container \
   -p 8080:8080 \
-  mjw_sevice
+  --network mjw_network \
+  -e DB_HOST=postgres-container \
+  mjw_service:1.0.0
 
 kill/start database
 docker stop postgres-container

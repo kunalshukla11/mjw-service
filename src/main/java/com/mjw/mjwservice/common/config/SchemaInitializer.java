@@ -17,12 +17,12 @@ public class SchemaInitializer implements BeanPostProcessor {
     private String schemaName;
 
     @Override
-    public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
+    public Object postProcessAfterInitialization(final Object bean, final String beanName) throws BeansException {
         if (bean instanceof DataSource) {
-            DataSource dataSource = (DataSource) bean;
+            final DataSource dataSource = (DataSource) bean;
             try {
-                Connection conn = dataSource.getConnection();
-                Statement statement = conn.createStatement();
+                final Connection conn = dataSource.getConnection();
+                final Statement statement = conn.createStatement();
                 statement.execute(String.format("CREATE SCHEMA IF NOT EXISTS %s", schemaName));
             } catch (SQLException e) {
                 throw new RuntimeException(e);
