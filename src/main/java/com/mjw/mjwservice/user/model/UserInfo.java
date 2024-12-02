@@ -39,7 +39,8 @@ public record UserInfo(
             Long id,
 
             String email,
-            String firstName) {
+            String firstName,
+            String initial) {
 
     }
 

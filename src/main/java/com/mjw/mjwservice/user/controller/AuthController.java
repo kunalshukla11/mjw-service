@@ -49,5 +49,10 @@ public class AuthController {
 
     }
 
+    @PostMapping("/logout")
+    public ResponseEntity<String> logout() {
+        log.info("logout user");
+        return userAccountService.logout();
+    }
 
 }
