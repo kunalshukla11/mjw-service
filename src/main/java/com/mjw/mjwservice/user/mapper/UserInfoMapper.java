@@ -32,6 +32,7 @@ public interface UserInfoMapper {
                 .map(string -> string.charAt(0))
                 .filter(Character::isLetter)
                 .map(Character::toUpperCase);
+
         return emailInitial
                 .or(() -> nameInitial)
                 .map(String::valueOf)
