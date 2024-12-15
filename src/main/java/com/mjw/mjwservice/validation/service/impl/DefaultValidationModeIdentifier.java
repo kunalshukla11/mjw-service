@@ -15,25 +15,30 @@ public class DefaultValidationModeIdentifier<T extends Validatable> implements V
     @Override
     public ValidationMode identify(final Validatable validatable) {
         return Arrays.stream(ValidationMode.values())
-                .filter(validationMode -> validationMode.getModelClass().equals(validatable.getClass()))
-                .filter(ValidationMode::isDefaultMode)
+                .filter(validationMode -> validationMode.getValidatingClass().equals(validatable.getClass()))
+                .filter(ValidationMode::getIsDefault)
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("No default mode found for: " + validatable.getClass()
                         .getName()));
+    }
+
+    @Override
+    public Class<? extends Validatable> supportsType() {
+        return null;
     }
 
     @PostConstruct
     void init() {
         final Map<Class<?>, ValidationMode> defaultModeMap = new java.util.HashMap<>();
         for (ValidationMode mode : ValidationMode.values()) {
-            if (mode.isDefaultMode()) {
-                if (defaultModeMap.containsKey(mode.getModelClass())) {
+            if (mode.getIsDefault()) {
+                if (defaultModeMap.containsKey(mode.getValidatingClass())) {
                     throw new IllegalStateException(
-                            "Multiple enum constants with defaultMode=true for model class: " + mode.getModelClass()
-                                    .getName()
+                            "Multiple enum constants with defaultMode=true for model class: "
+                                    + mode.getValidatingClass().getName()
                     );
                 }
-                defaultModeMap.put(mode.getModelClass(), mode);
+                defaultModeMap.put(mode.getValidatingClass(), mode);
             }
         }
     }

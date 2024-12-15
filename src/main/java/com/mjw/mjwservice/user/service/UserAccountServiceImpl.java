@@ -18,8 +18,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import static com.mjw.mjwservice.validation.model.ValidationMode.REGISTER_USER;
-
 @Service
 @RequiredArgsConstructor
 public class UserAccountServiceImpl implements UserAccountService {
@@ -33,7 +31,7 @@ public class UserAccountServiceImpl implements UserAccountService {
 
     @Override
     public ResponseEntity<LoginResponse> registerUser(final UserInfo userInfo) {
-        validationOrchestrator.validate(userInfo, REGISTER_USER);
+        //validationOrchestrator.validate(userInfo, REGISTER_USER);
         final UserInfo userInfoWithEncodedPassword = userInfo.withPassword(passwordEncoder.encode(userInfo.password()));
         final UserInfoDatabaseImpl userInfoDatabase =
                 userRepository.save(userInfoMapper.toDatabase(userInfoWithEncodedPassword));

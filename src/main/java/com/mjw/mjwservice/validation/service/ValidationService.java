@@ -1,18 +1,14 @@
 package com.mjw.mjwservice.validation.service;
 
 import com.mjw.mjwservice.user.model.Validatable;
-import com.mjw.mjwservice.validation.model.ValidationMode;
-import com.mjw.mjwservice.validation.model.Violation;
+import com.mjw.mjwservice.validation.model.ValidationResponse;
+import com.mjw.mjwservice.validation.model.context.DefaultValidationContext;
 
-import java.util.Set;
+public interface ValidationService<K extends Validatable> {
 
-public interface ValidationService<T> {
+    ValidationResponse validate(K k, DefaultValidationContext defaultValidationContext);
 
-    Set<Violation> validate(Validatable t, ValidationMode validationMode);
-
-    default Class<?> supports() {
-        return null;
-    }
+    Class<? extends Validatable> supportsType();
 
 
 }

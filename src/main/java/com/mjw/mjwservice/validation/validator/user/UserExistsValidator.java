@@ -18,8 +18,8 @@ import java.util.Set;
 public class UserExistsValidator implements RuleValidator<UserInfo> {
 
     @Override
-    public List<Violation> validate(final Validatable t, final ValidationMode validationMode, final ValidationContext<?
-            extends Validatable> context) {
+    public List<Violation> validate(final UserInfo userInfo, final ValidationMode validationMode,
+                                    final ValidationContext context) {
         final UserInfoValidationContext userInfoValidationContext = (UserInfoValidationContext) context;
         return Optional.ofNullable(userInfoValidationContext.userInfoDatabase())
                 .map(userInfoDatabase -> List.of(Violation.builder()
@@ -32,6 +32,11 @@ public class UserExistsValidator implements RuleValidator<UserInfo> {
     @Override
     public Set<ValidationMode> supports() {
         return Set.of(ValidationMode.REGISTER_USER);
+    }
+
+    @Override
+    public Class<? extends Validatable> validatingClass() {
+        return UserInfo.class;
     }
 
 }
