@@ -40,8 +40,8 @@ public class UserInfoSchemaValidator implements RuleValidator<UserInfo> {
     }
 
     @Override
-    public List<Violation> validate(final Validatable userInfo, final ValidationMode validationMode,
-                                    final ValidationContext<? extends Validatable> context) {
+    public List<Violation> validate(final UserInfo userInfo, final ValidationMode validationMode,
+                                    final ValidationContext context) {
         return validateSchema.apply((UserInfo) userInfo, validationMode);
     }
 
@@ -51,7 +51,12 @@ public class UserInfoSchemaValidator implements RuleValidator<UserInfo> {
     }
 
     @Override
-    public Type getType() {
+    public Class<? extends Validatable> validatingClass() {
+        return UserInfo.class;
+    }
+
+    @Override
+    public Type type() {
         return SCHEMA;
     }
 

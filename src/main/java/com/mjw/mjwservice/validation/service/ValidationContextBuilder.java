@@ -6,12 +6,12 @@ import com.mjw.mjwservice.validation.model.context.DefaultValidationContext;
 import com.mjw.mjwservice.validation.model.context.ValidationContext;
 
 
-public interface ValidationContextBuilder {
+public interface ValidationContextBuilder<T extends Validatable> {
 
-    ValidationContext<? extends Validatable> build(Validatable validatable,
-                                                   DefaultValidationContext defaultValidationContext,
-                                                   ValidationMode validationMode);
+    ValidationContext build(T validatable,
+                            DefaultValidationContext defaultValidationContext,
+                            ValidationMode validationMode);
 
-    Class<?> supports();
+    Class<? extends Validatable> supportsType();
 
 }

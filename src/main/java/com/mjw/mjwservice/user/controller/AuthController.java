@@ -4,6 +4,7 @@ import com.mjw.mjwservice.common.model.LoginResponse;
 import com.mjw.mjwservice.common.util.SecurityCipher;
 import com.mjw.mjwservice.user.model.UserInfo;
 import com.mjw.mjwservice.user.service.UserAccountService;
+import com.mjw.mjwservice.validation.annotation.Validator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.ResponseEntity;
@@ -29,7 +30,8 @@ public class AuthController {
     private final AuthenticationManager authenticationManager;
 
     @PostMapping("/register")
-    public ResponseEntity<LoginResponse> register(final @RequestBody UserInfo userInfo) {
+    public ResponseEntity<LoginResponse> register(
+            final @Validator(validatingClass = UserInfo.class) UserInfo userInfo) {
         log.info("register user: {}", userInfo);
         return userAccountService.registerUser(userInfo);
     }

@@ -7,31 +7,30 @@ import com.mjw.mjwservice.user.repository.UserRepository;
 import com.mjw.mjwservice.validation.model.ValidationMode;
 import com.mjw.mjwservice.validation.model.context.DefaultValidationContext;
 import com.mjw.mjwservice.validation.model.context.UserInfoValidationContext;
-import com.mjw.mjwservice.validation.model.context.ValidationContext;
 import com.mjw.mjwservice.validation.service.ValidationContextBuilder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class UserInfoContextBuilder implements ValidationContextBuilder {
+public class UserInfoContextBuilder implements ValidationContextBuilder<UserInfo> {
 
     private final UserRepository userRepository;
 
 
     @Override
-    public ValidationContext<? extends Validatable> build(final Validatable validatable,
+    public UserInfoValidationContext build(final UserInfo userInfo,
                                                           final DefaultValidationContext defaultValidationContext,
                                                           final ValidationMode validationMode) {
-        final UserInfo userInfo = (UserInfo) validatable;
         final UserInfoDatabaseImpl userInfoDatabase = userRepository.findByEmail(userInfo.email())
                 .orElse(null);
 
         return UserInfoValidationContext.builder().userInfoDatabase(userInfoDatabase).build();
     }
 
+
     @Override
-    public Class<?> supports() {
+    public Class<? extends Validatable> supportsType() {
         return UserInfo.class;
     }
 
