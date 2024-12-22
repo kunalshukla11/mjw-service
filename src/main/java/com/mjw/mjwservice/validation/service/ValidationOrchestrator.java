@@ -10,6 +10,7 @@ import com.mjw.mjwservice.validation.model.context.ValidationContext;
 import com.mjw.mjwservice.validation.service.impl.DefaultContextBuilder;
 import com.mjw.mjwservice.validation.service.impl.DefaultRuleExecutor;
 import com.mjw.mjwservice.validation.util.ValidatorUtil;
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.collections.CollectionUtils;
@@ -17,7 +18,9 @@ import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static com.mjw.mjwservice.validation.validator.RuleValidator.Type.BUSINESS;
 import static com.mjw.mjwservice.validation.validator.RuleValidator.Type.SCHEMA;
@@ -35,7 +38,7 @@ public class ValidationOrchestrator {
     private final DefaultRuleExecutor defaultRuleExecutor;
 
 
-    Object orchestrate(final Validatable payload,
+    public Object orchestrate(final Validatable payload,
                        final Class<? extends Validatable> validatingClass,
                        final DefaultValidationContext defaultValidationContext) {
 
@@ -88,6 +91,23 @@ public class ValidationOrchestrator {
                 });
 
         return ValidatorUtil.mapToValidationResponse(violations);
+    }
+
+    @PostConstruct
+    void ensureUniqueDefaultValidationMode() {
+        final Map<Class<? extends Validatable>, Boolean> defaultModeMap = new ConcurrentHashMap<>();
+
+        Arrays.stream(ValidationMode.values())
+                .forEach(validationMode -> {
+                    if (validationMode.getIsDefault()
+                            && defaultModeMap.containsKey(validationMode.getValidatingClass())) {
+                        throw new IllegalStateException(
+                                "Multiple default Validation mode for class: "
+                                        + validationMode.getValidatingClass().getName());
+
+                    }
+                    defaultModeMap.put(validationMode.getValidatingClass(), validationMode.getIsDefault());
+                });
     }
 
     private ValidationContextBuilder<? extends Validatable> getContextBuilder(

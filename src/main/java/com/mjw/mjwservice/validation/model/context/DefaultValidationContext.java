@@ -4,6 +4,6 @@ import lombok.Builder;
 import lombok.With;
 
 @Builder
-public record DefaultValidationContext(@With Object payload) implements ValidationContext {
+public record DefaultValidationContext(@With Object payload, String requestorSid) implements ValidationContext {
 
 }
