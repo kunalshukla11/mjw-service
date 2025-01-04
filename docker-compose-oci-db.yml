@@ -1,0 +1,19 @@
+services:
+  mjw_db:
+    image: postgres:17
+    container_name: postgres-container
+    environment:
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_USER: ${POSTGRES_USER}
+    ports:
+      - "5432:5432"
+    volumes:
+      - type: bind
+        source: /mnt/postgres-data
+        target: /var/lib/postgresql/data
+    user: "999:999"
+    networks:
+      - mjw_network
+networks:
+  mjw_network:
+    driver: bridge
