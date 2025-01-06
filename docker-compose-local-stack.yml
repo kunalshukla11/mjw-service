@@ -1,0 +1,49 @@
+services:
+  mjw_db:
+    image: postgres:17
+    container_name: postgres-container
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - mjw_network
+
+  mjw_service:
+    image: mjw_service:1.0.0
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: mjw_service_container
+    environment:
+      DB_HOST: mjw_db
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mjw_db
+    networks:
+      - mjw_network
+
+  mjw_app:
+    image: mjw_app:1.0.0
+    build:
+      context: ../mjw-app
+      dockerfile: Dockerfile
+    container_name: mjw_app_container
+    depends_on:
+      - mjw_service
+    ports:
+      - "3000:3000"
+    networks:
+      - mjw_network
+
+networks:
+  mjw_network: {}
+
+volumes:
+  postgres-data:
