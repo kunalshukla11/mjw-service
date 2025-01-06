@@ -12,8 +12,3 @@ services:
         source: /mnt/postgres-data
         target: /var/lib/postgresql/data
     user: "1001:1001"
-    networks:
-      - mjw_network
-networks:
-  mjw_network:
-    driver: bridge

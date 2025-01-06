@@ -28,3 +28,7 @@ services:
       - "3000:3000"
     networks:
       - mjw_network
+
+  networks:
+    mjw_network:
+      driver: bridge
