@@ -11,8 +11,6 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     ports:
       - "8080:8080"
-    depends_on:
-      - mjw_db
     networks:
       - mjw_network
 
@@ -29,6 +27,6 @@ services:
     networks:
       - mjw_network
 
-  networks:
-    mjw_network:
-      driver: bridge
+networks:
+  mjw_network:
+    driver: bridge
