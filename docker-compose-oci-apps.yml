@@ -1,9 +1,10 @@
 services:
   mjw_service:
     image: mjw_service:1.0.0
-    build:
-      context: .
-      dockerfile: Dockerfile
+# Not building as moving images via scp
+#    build:
+#      context: .
+#      dockerfile: Dockerfile
     container_name: mjw_service_container
     environment:
       DB_HOST: mjwdbvm.mjwsubnet.mjwvcn.oraclevcn.com
@@ -16,9 +17,9 @@ services:
 
   mjw_app:
     image: mjw_app:1.0.0
-    build:
-      context: ../mjw-app
-      dockerfile: Dockerfile
+#    build:
+#      context: ../mjw-app
+#      dockerfile: Dockerfile
     container_name: mjw_app_container
     depends_on:
       - mjw_service
