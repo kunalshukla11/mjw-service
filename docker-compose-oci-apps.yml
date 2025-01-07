@@ -23,6 +23,10 @@ services:
     container_name: mjw_app_container
     depends_on:
       - mjw_service
+    environment:
+      NEXT_PUBLIC_MJW_BASE_URL: http://mjwappvm.mjwsubnet.mjwvcn.oraclevcn.com:8080
+    args:
+      - NEXT_PUBLIC_MJW_BASE_URL: http://mjwappvm.mjwsubnet.mjwvcn.oraclevcn.com:8080
     ports:
       - "3000:3000"
     networks:
