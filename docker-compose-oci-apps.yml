@@ -17,14 +17,11 @@ services:
 
   mjw_app:
     image: mjw_app:1.0.0
-    build:
-      args:
-        - NEXT_PUBLIC_MJW_BASE_URL=http://mjwappvm.mjwsubnet.mjwvcn.oraclevcn.com:8080
     container_name: mjw_app_container
     depends_on:
       - mjw_service
     environment:
-      NEXT_PUBLIC_MJW_BASE_URL: http://mjwappvm.mjwsubnet.mjwvcn.oraclevcn.com:8080
+      NODE_ENV: production
     ports:
       - "3000:3000"
     networks:

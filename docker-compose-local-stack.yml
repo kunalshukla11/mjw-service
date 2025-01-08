@@ -35,6 +35,8 @@ services:
       context: ../mjw-app
       dockerfile: Dockerfile
     container_name: mjw_app_container
+    environment:
+      NODE_ENV: development
     depends_on:
       - mjw_service
     ports:
