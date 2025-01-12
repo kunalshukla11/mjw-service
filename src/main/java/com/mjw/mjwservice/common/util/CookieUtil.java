@@ -14,8 +14,8 @@ public class CookieUtil {
         return ResponseCookie.from(Token.TokenType.ACCESS.getDescription(), encryptedToken)
                 .maxAge(duration)
                 .httpOnly(true)
-                .secure(true)
-                .sameSite(Cookie.SameSite.NONE.attributeValue())
+                .secure(false)
+                .sameSite(Cookie.SameSite.LAX.attributeValue())
                 .path("/")
                 .build();
     }
@@ -26,8 +26,8 @@ public class CookieUtil {
                 .maxAge(0)
                 .httpOnly(true)
                 .path("/")
-                .secure(true)
-                .sameSite(Cookie.SameSite.NONE.attributeValue())
+                .secure(false)
+                .sameSite(Cookie.SameSite.LAX.attributeValue())
                 .build();
     }
 
