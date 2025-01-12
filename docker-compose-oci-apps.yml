@@ -26,7 +26,6 @@ services:
       - mjw_service
     environment:
       NODE_ENV: production
-      NEXT_PUBLIC_MJW_SERVICE_HOST: mjw_service
     env_file:
       # Specify the environment files as a list of strings
       - path: .env
