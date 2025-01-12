@@ -2,7 +2,6 @@ package com.mjw.mjwservice.user.controller;
 
 import com.mjw.mjwservice.user.model.UserInfo;
 import com.mjw.mjwservice.user.service.UserAccountService;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.ResponseEntity;
@@ -19,9 +18,7 @@ public class UserAccountController {
     private final UserAccountService userAccountService;
 
     @GetMapping("/me")
-    public ResponseEntity<UserInfo.UserInfoSummery> me(final HttpServletRequest request) {
-        final String cookieHeader = request.getHeader("Cookie");
-        log.info("Cookies received: {}", cookieHeader);
+    public ResponseEntity<UserInfo.UserInfoSummery> me() {
         return ResponseEntity.ok(userAccountService.getUserProfile());
     }
 }
