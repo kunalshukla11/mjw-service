@@ -9,6 +9,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class CookieUtil {
 
+
+    //TODO Set secure = true and sameSite = None for production
     public HttpCookie createAccessTokenCookie(final String token, final Long duration) {
         final String encryptedToken = SecurityCipher.encrypt(token);
         return ResponseCookie.from(Token.TokenType.ACCESS.getDescription(), encryptedToken)
