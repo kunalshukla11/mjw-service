@@ -1,4 +1,4 @@
-package com.mjw.mjwservice.common.config;
+package com.mjw.mjwservice.security.config;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

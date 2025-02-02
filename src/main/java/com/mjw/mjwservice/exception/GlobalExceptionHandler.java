@@ -1,4 +1,4 @@
-package com.mjw.mjwservice.common;
+package com.mjw.mjwservice.exception;
 
 import com.mjw.mjwservice.exception.ValidationException;
 import com.mjw.mjwservice.validation.model.ErrorResponse;
@@ -8,6 +8,7 @@ import lombok.extern.log4j.Log4j2;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -34,6 +35,26 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleWebExchangeBindException(final WebExchangeBindException exception) {
         return Optional.of(exception)
                 .map(WebExchangeBindException::getBindingResult)
+                .map(bindingResult -> ValidatorUtil.mapFieldErrorsToFieldViolations(bindingResult.getFieldErrors()))
+                .filter(CollectionUtils::isNotEmpty)
+                .map(fieldViolations -> ValidationResponse.builder().fieldViolations(fieldViolations).build())
+                .map(validationResponse -> ErrorResponse.builder()
+                        .message("Request Failed in Validation")
+                        .validationResponse(validationResponse)
+                        .build())
+                .map(errorResponse -> ResponseEntity.badRequest().body(errorResponse))
+                .orElse(ResponseEntity.badRequest()
+                        .body(ErrorResponse.builder()
+                                .message("Request Failed in Validation without error details")
+                                .build()));
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseEntity<ErrorResponse> handleMethodArgumentNotValidException(
+            final MethodArgumentNotValidException exception) {
+        return Optional.of(exception)
+                .map(MethodArgumentNotValidException::getBindingResult)
                 .map(bindingResult -> ValidatorUtil.mapFieldErrorsToFieldViolations(bindingResult.getFieldErrors()))
                 .filter(CollectionUtils::isNotEmpty)
                 .map(fieldViolations -> ValidationResponse.builder().fieldViolations(fieldViolations).build())

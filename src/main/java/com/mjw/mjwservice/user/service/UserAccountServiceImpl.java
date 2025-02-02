@@ -1,10 +1,10 @@
 package com.mjw.mjwservice.user.service;
 
-import com.mjw.mjwservice.common.model.LoginResponse;
-import com.mjw.mjwservice.common.model.Token;
-import com.mjw.mjwservice.common.service.TokenProvider;
-import com.mjw.mjwservice.common.util.CookieUtil;
-import com.mjw.mjwservice.user.entity.UserInfoDatabaseImpl;
+import com.mjw.mjwservice.security.model.LoginResponse;
+import com.mjw.mjwservice.security.model.Token;
+import com.mjw.mjwservice.security.service.TokenProvider;
+import com.mjw.mjwservice.security.util.CookieUtil;
+import com.mjw.mjwservice.user.entity.UserInfoDb;
 import com.mjw.mjwservice.user.mapper.UserInfoMapper;
 import com.mjw.mjwservice.user.model.UserInfo;
 import com.mjw.mjwservice.user.repository.UserRepository;
@@ -33,7 +33,7 @@ public class UserAccountServiceImpl implements UserAccountService {
     public ResponseEntity<LoginResponse> registerUser(final UserInfo userInfo) {
         //validationOrchestrator.validate(userInfo, REGISTER_USER);
         final UserInfo userInfoWithEncodedPassword = userInfo.withPassword(passwordEncoder.encode(userInfo.password()));
-        final UserInfoDatabaseImpl userInfoDatabase =
+        final UserInfoDb userInfoDatabase =
                 userRepository.save(userInfoMapper.toDatabase(userInfoWithEncodedPassword));
         final HttpHeaders responseHeaders = new HttpHeaders();
         final Token newAccessToken = tokenProvider.generateAccessToken(userInfoDatabase);
@@ -49,7 +49,7 @@ public class UserAccountServiceImpl implements UserAccountService {
     @Override
     public ResponseEntity<LoginResponse> login(final UserInfo userInfo, final String accessToken) {
         final String email = userInfo.email();
-        final UserInfoDatabaseImpl user = userRepository.findByEmail(email)
+        final UserInfoDb user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
 
         final boolean accessTokenValid = tokenProvider.validateToken(accessToken);
@@ -80,9 +80,9 @@ public class UserAccountServiceImpl implements UserAccountService {
     public UserInfo.UserInfoSummery getUserProfile() {
 
         final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        final UserInfoDatabaseImpl userInfoDatabase = (UserInfoDatabaseImpl) authentication.getPrincipal();
+        final UserInfoDb userInfoDatabase = (UserInfoDb) authentication.getPrincipal();
 
-        final UserInfoDatabaseImpl userInfoDatabase1 =
+        final UserInfoDb userInfoDatabase1 =
                 userRepository.findById(userInfoDatabase.getId()).orElseThrow(() -> new UsernameNotFoundException(
                         "User not found with id: " + userInfoDatabase.getId()));
         return userInfoMapper.toUserSummery(userInfoDatabase1);

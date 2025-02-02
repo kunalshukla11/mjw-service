@@ -1,4 +1,4 @@
-package com.mjw.mjwservice.common.service.impl;
+package com.mjw.mjwservice.security.service.impl;
 
 import com.mjw.mjwservice.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;

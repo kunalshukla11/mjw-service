@@ -1,4 +1,4 @@
-package com.mjw.mjwservice.common.model;
+package com.mjw.mjwservice.security.model;
 
 import lombok.Builder;
 

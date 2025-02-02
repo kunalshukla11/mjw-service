@@ -1,10 +1,10 @@
 package com.mjw.mjwservice.validation.model.context;
 
-import com.mjw.mjwservice.user.entity.UserInfoDatabaseImpl;
+import com.mjw.mjwservice.user.entity.UserInfoDb;
 import lombok.Builder;
 
 @Builder
-public record UserInfoValidationContext(UserInfoDatabaseImpl userInfoDatabase) implements ValidationContext {
+public record UserInfoValidationContext(UserInfoDb userInfoDatabase) implements ValidationContext {
 
 
 }

@@ -1,0 +1,74 @@
+databaseChangeLog:
+  - changeSet:
+      id: create_itinerary_table
+      author: narendra
+      changes:
+        - createTable:
+            tableName: itinerary
+            schemaName: mjw_service
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: name
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: identifier
+                  type: VARCHAR(400)
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: location_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: duration
+                  type: int
+                  constraints:
+                    nullable: false
+              - column:
+                  name: details
+                  type: JSONB
+        - addForeignKeyConstraint:
+            constraintName: fk_itinerary_location
+            baseTableName: itinerary
+            baseColumnNames: location_id
+            referencedTableName: location
+            referencedColumnNames: id
+            onUpdate: CASCADE
+            onDelete: CASCADE
+        - addUniqueConstraint:
+            columnNames: location_id, name
+            constraintName: unique_itinerary
+            schemaName: mjw_service
+            tableName: itinerary
+        - createIndex:
+            tableName: itinerary
+            schemaName: mjw_service
+            indexName: itinerary_location_id
+            columns:
+              - column:
+                  name: location_id
+        - createIndex:
+            tableName: itinerary
+            schemaName: mjw_service
+            indexName: itinerary_name
+            columns:
+              - column:
+                  name: name
+        - createIndex:
+            tableName: itinerary
+            schemaName: mjw_service
+            indexName: itinerary_duration
+            columns:
+              - column:
+                  name: duration

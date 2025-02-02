@@ -1,14 +1,14 @@
 package com.mjw.mjwservice.user.repository;
 
-import com.mjw.mjwservice.user.entity.UserInfoDatabaseImpl;
+import com.mjw.mjwservice.user.entity.UserInfoDb;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
 @Repository
-public interface UserRepository extends JpaRepository<UserInfoDatabaseImpl, Long> {
+public interface UserRepository extends JpaRepository<UserInfoDb, Long> {
 
-    Optional<UserInfoDatabaseImpl> findByEmail(String email);
+    Optional<UserInfoDb> findByEmail(String email);
 
 }

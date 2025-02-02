@@ -1,7 +1,7 @@
-package com.mjw.mjwservice.common.service.impl;
+package com.mjw.mjwservice.security.service.impl;
 
-import com.mjw.mjwservice.common.model.Token;
-import com.mjw.mjwservice.common.service.TokenProvider;
+import com.mjw.mjwservice.security.model.Token;
+import com.mjw.mjwservice.security.service.TokenProvider;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;

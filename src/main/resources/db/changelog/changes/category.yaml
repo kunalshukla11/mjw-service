@@ -1,0 +1,41 @@
+databaseChangeLog:
+  - changeSet:
+      id: create_category_table
+      author: narendra
+      changes:
+        - createTable:
+            tableName: category
+            schemaName: mjw_service
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: name
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: package_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+        - createIndex:
+            tableName: category
+            schemaName: mjw_service
+            indexName: category_package_id
+            columns:
+              - column:
+                  name: package_id
+        - addForeignKeyConstraint:
+            constraintName: fk_category_package
+            baseTableName: category
+            baseColumnNames: package_id
+            referencedTableName: package
+            referencedColumnNames: id
+            onUpdate: CASCADE
+            onDelete: CASCADE

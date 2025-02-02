@@ -1,6 +1,6 @@
 package com.mjw.mjwservice.user.mapper;
 
-import com.mjw.mjwservice.user.entity.UserInfoDatabaseImpl;
+import com.mjw.mjwservice.user.entity.UserInfoDb;
 import com.mjw.mjwservice.user.model.UserInfo;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -14,15 +14,15 @@ public interface UserInfoMapper {
 
     UserInfoMapper INSTANCE = Mappers.getMapper(UserInfoMapper.class);
 
-    UserInfoDatabaseImpl toDatabase(UserInfo userInfo);
+    UserInfoDb toDatabase(UserInfo userInfo);
 
-    UserInfo fromDatabase(UserInfoDatabaseImpl userInfoDatabase);
+    UserInfo fromDatabase(UserInfoDb userInfoDatabase);
 
     @Mapping(target = "initial", source = ".", qualifiedByName = "toInitial")
-    UserInfo.UserInfoSummery toUserSummery(UserInfoDatabaseImpl userInfoDatabase);
+    UserInfo.UserInfoSummery toUserSummery(UserInfoDb userInfoDatabase);
 
     @Named("toInitial")
-    default String translateToFullName(final UserInfoDatabaseImpl userInfoDatabase) {
+    default String translateToFullName(final UserInfoDb userInfoDatabase) {
         final Optional<Character> emailInitial = Optional.ofNullable(userInfoDatabase.getEmail())
                 .map(string -> string.charAt(0))
                 .filter(Character::isLetter)

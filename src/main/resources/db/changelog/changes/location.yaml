@@ -1,0 +1,71 @@
+databaseChangeLog:
+  - changeSet:
+      id: create_location_table
+      author: narendra
+      changes:
+        - createTable:
+            tableName: location
+            schemaName: mjw_service
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: city
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: city_code
+                  type: VARCHAR(50)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: state
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: state_code
+                  type: VARCHAR(50)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: country
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: country_code
+                  type: VARCHAR(50)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: images_url
+                  type: TEXT[]
+        - createIndex:
+            tableName: location
+            schemaName: mjw_service
+            indexName: location_city
+            columns:
+              - column:
+                  name: city
+        - createIndex:
+            tableName: location
+            schemaName: mjw_service
+            indexName: location_country
+            columns:
+              - column:
+                  name: country
+        - addUniqueConstraint:
+            columnNames: city_code, state_code, country_code
+            constraintName: unique_location
+            schemaName: mjw_service
+            tableName: location
+
+
+

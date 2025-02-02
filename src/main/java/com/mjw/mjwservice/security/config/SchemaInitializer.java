@@ -1,4 +1,4 @@
-package com.mjw.mjwservice.common.config;
+package com.mjw.mjwservice.security.config;
 
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Value;

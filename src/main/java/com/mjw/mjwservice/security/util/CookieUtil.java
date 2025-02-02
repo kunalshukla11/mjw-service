@@ -1,6 +1,6 @@
-package com.mjw.mjwservice.common.util;
+package com.mjw.mjwservice.security.util;
 
-import com.mjw.mjwservice.common.model.Token;
+import com.mjw.mjwservice.security.model.Token;
 import org.springframework.boot.web.server.Cookie;
 import org.springframework.http.HttpCookie;
 import org.springframework.http.ResponseCookie;

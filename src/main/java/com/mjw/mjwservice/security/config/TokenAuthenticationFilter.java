@@ -1,10 +1,10 @@
-package com.mjw.mjwservice.common.config;
+package com.mjw.mjwservice.security.config;
 
 
-import com.mjw.mjwservice.common.model.Token;
-import com.mjw.mjwservice.common.service.TokenProvider;
-import com.mjw.mjwservice.common.service.impl.CustomUserDetailsService;
-import com.mjw.mjwservice.common.util.SecurityCipher;
+import com.mjw.mjwservice.security.model.Token;
+import com.mjw.mjwservice.security.service.TokenProvider;
+import com.mjw.mjwservice.security.service.impl.CustomUserDetailsService;
+import com.mjw.mjwservice.security.util.SecurityCipher;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;

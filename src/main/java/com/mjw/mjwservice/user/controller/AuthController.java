@@ -1,7 +1,7 @@
 package com.mjw.mjwservice.user.controller;
 
-import com.mjw.mjwservice.common.model.LoginResponse;
-import com.mjw.mjwservice.common.util.SecurityCipher;
+import com.mjw.mjwservice.security.model.LoginResponse;
+import com.mjw.mjwservice.security.util.SecurityCipher;
 import com.mjw.mjwservice.user.model.UserInfo;
 import com.mjw.mjwservice.user.service.UserAccountService;
 import com.mjw.mjwservice.validation.annotation.Validator;
