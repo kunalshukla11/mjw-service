@@ -1,6 +1,6 @@
 package com.mjw.mjwservice.validation.service.impl.user;
 
-import com.mjw.mjwservice.user.entity.UserInfoDatabaseImpl;
+import com.mjw.mjwservice.user.entity.UserInfoDb;
 import com.mjw.mjwservice.user.model.UserInfo;
 import com.mjw.mjwservice.user.model.Validatable;
 import com.mjw.mjwservice.user.repository.UserRepository;
@@ -22,7 +22,7 @@ public class UserInfoContextBuilder implements ValidationContextBuilder<UserInfo
     public UserInfoValidationContext build(final UserInfo userInfo,
                                                           final DefaultValidationContext defaultValidationContext,
                                                           final ValidationMode validationMode) {
-        final UserInfoDatabaseImpl userInfoDatabase = userRepository.findByEmail(userInfo.email())
+        final UserInfoDb userInfoDatabase = userRepository.findByEmail(userInfo.email())
                 .orElse(null);
 
         return UserInfoValidationContext.builder().userInfoDatabase(userInfoDatabase).build();

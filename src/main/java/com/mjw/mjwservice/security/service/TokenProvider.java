@@ -1,7 +1,7 @@
-package com.mjw.mjwservice.common.service;
+package com.mjw.mjwservice.security.service;
 
 
-import com.mjw.mjwservice.common.model.Token;
+import com.mjw.mjwservice.security.model.Token;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 

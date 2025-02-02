@@ -30,7 +30,7 @@ public class ValidatorUtil {
     public static List<FieldViolation> mapFieldErrorsToFieldViolations(final List<FieldError> fieldErrors) {
         return fieldErrors.stream()
                 .map(fieldError -> FieldViolation.builder()
-                        .field(fieldError.getField() + "." + fieldError.getField())
+                        .field(fieldError.getField())
                         .violations(List.of(Violation.builder()
                                 .violationType(Violation.ViolationType.ERROR)
                                 .message(fieldError.getDefaultMessage())

@@ -25,7 +25,7 @@ import java.util.List;
 @NoArgsConstructor
 @Entity(name = "USER_INFO")
 @Table(name = "USER_INFO", schema = "MJW_SERVICE")
-public class UserInfoDatabaseImpl implements UserDetails {
+public class UserInfoDb implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

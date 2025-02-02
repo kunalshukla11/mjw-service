@@ -21,4 +21,6 @@ docker start postgres-container
 
 
 TODO- items
-LOW Centralize validations and implement AOP type validations, bifurcated validators
+LOW Use Spring modularity
+Low Use spring events and async with java virtual thread
+LOW Using centralized validations but use AOP type validations,if possible

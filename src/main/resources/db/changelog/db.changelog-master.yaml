@@ -1,4 +1,12 @@
 databaseChangeLog:
   - include:
       file: classpath:/db/changelog/changes/user-info.yaml
+  - include:
+      file: classpath:/db/changelog/changes/location.yaml
+  - include:
+      file: classpath:/db/changelog/changes/itinerary.yaml
+  - include:
+      file: classpath:/db/changelog/changes/package.yaml
+  - include:
+      file: classpath:/db/changelog/changes/category.yaml
 

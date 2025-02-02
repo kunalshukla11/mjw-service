@@ -1,6 +1,6 @@
-package com.mjw.mjwservice.common.config;
+package com.mjw.mjwservice.security.config;
 
-import com.mjw.mjwservice.common.service.impl.CustomUserDetailsService;
+import com.mjw.mjwservice.security.service.impl.CustomUserDetailsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
@@ -52,6 +52,7 @@ public class SecurityConfiguration {
         return authenticationConfiguration.getAuthenticationManager();
     }
 
+    //TODO- Add security for admin endpoints
     @Bean
     public SecurityFilterChain securityFilterChain(
             final HttpSecurity http,
@@ -64,7 +65,7 @@ public class SecurityConfiguration {
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .formLogin(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorizeHttpRequests -> authorizeHttpRequests
-                        .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers("/api/auth/**", "/api/location/**").permitAll()
                         .anyRequest().authenticated())
                 .sessionManagement(sessionManagement -> sessionManagement
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))

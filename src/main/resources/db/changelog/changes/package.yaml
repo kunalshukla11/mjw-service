@@ -1,0 +1,98 @@
+databaseChangeLog:
+  - changeSet:
+      id: create_package_table
+      author: narendra
+      changes:
+        - createTable:
+            tableName: package
+            schemaName: mjw_service
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: name
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: location_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: itinerary_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: standard_price
+                  type: NUMBER(15, 5)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: superior_price
+                  type: NUMBER(15, 5)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: luxury_price
+                  type: NUMBER(15, 5)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: currency
+                  type: VARCHAR(10)
+                  constraints:
+                    nullable: false
+
+
+        - addForeignKeyConstraint:
+            constraintName: fk_package_location
+            baseTableName: package
+            baseColumnNames: location_id
+            referencedTableName: location
+            referencedColumnNames: id
+            onUpdate: CASCADE
+            onDelete: CASCADE
+        - addForeignKeyConstraint:
+            constraintName: fk_package_itinerary
+            baseTableName: package
+            baseColumnNames: itinerary_id
+            referencedTableName: itinerary
+            referencedColumnNames: id
+            onUpdate: CASCADE
+            onDelete: CASCADE
+        - addUniqueConstraint:
+            columnNames: location_id, name
+            constraintName: unique_package
+            schemaName: mjw_service
+            tableName: package
+
+
+        - createIndex:
+            tableName: package
+            schemaName: mjw_service
+            indexName: package_name
+            columns:
+              - column:
+                  name: name
+        - createIndex:
+            tableName: package
+            schemaName: mjw_service
+            indexName: itinerary_id
+            columns:
+              - column:
+                  name: itinerary_id
+        - createIndex:
+            tableName: package
+            schemaName: mjw_service
+            indexName: package_location_id
+            columns:
+              - column:
+                  name: location_id
+

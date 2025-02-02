@@ -1,4 +1,4 @@
-package com.mjw.mjwservice.common.config;
+package com.mjw.mjwservice.security.config;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;

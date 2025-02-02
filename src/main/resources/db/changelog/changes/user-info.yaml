@@ -1,11 +1,11 @@
 databaseChangeLog:
   - changeSet:
       id: create-user-info-table
-      author: your_name
+      author: narendra
       changes:
         - createTable:
-            tableName: USER_INFO
-            schemaName: MJW_SERVICE
+            tableName: user_info
+            schemaName: mjw_service
             columns:
               - column:
                   name: id
@@ -34,14 +34,14 @@ databaseChangeLog:
                   name: updated_at
                   type: timestamp
         - createIndex:
-            tableName: USER_INFO
-            schemaName: MJW_SERVICE
-            indexName: USER_INFO_EMAIL
+            tableName: user_info
+            schemaName: mjw_service
+            indexName: user_info_email
             columns:
               - column:
                   name: email
-            constraintName: USER_INFO_EMAIL
-            constraintType: unique
+            constraintName: user_info_email
+            constraintType: UNIQUE
 
 
 

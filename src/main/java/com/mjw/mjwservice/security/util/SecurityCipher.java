@@ -1,4 +1,4 @@
-package com.mjw.mjwservice.common.util;
+package com.mjw.mjwservice.security.util;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
