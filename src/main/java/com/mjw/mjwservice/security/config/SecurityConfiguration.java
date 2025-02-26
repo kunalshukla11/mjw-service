@@ -65,7 +65,10 @@ public class SecurityConfiguration {
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .formLogin(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorizeHttpRequests -> authorizeHttpRequests
-                        .requestMatchers("/api/auth/**", "/api/location/**").permitAll()
+                        .requestMatchers("/api/auth/**",
+                                "/api/holiday/**",
+                                "/api/location/**",
+                                "/api/itinerary/**").permitAll()
                         .anyRequest().authenticated())
                 .sessionManagement(sessionManagement -> sessionManagement
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))

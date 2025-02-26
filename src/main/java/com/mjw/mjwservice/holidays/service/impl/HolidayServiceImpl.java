@@ -1,0 +1,154 @@
+package com.mjw.mjwservice.holidays.service.impl;
+
+import com.mjw.mjwservice.common.model.dashboard.HolidayDashboard;
+import com.mjw.mjwservice.common.model.dashboard.Section;
+import com.mjw.mjwservice.common.model.dashboard.config.DashboardConfig;
+import com.mjw.mjwservice.common.model.dashboard.config.DashboardData;
+import com.mjw.mjwservice.common.repository.DashboardConfigRepository;
+import com.mjw.mjwservice.common.repository.LocationRepository;
+import com.mjw.mjwservice.common.service.DashboardConfigService;
+import com.mjw.mjwservice.holidays.entity.HolidayDb;
+import com.mjw.mjwservice.holidays.entity.LocationPriceProjection;
+import com.mjw.mjwservice.holidays.mapper.HolidayMapper;
+import com.mjw.mjwservice.holidays.model.Holiday;
+import com.mjw.mjwservice.holidays.model.Itinerary;
+import com.mjw.mjwservice.holidays.repository.HolidayRepository;
+import com.mjw.mjwservice.holidays.service.HolidayService;
+import com.mjw.mjwservice.holidays.service.ItineraryService;
+import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
+import lombok.extern.log4j.Log4j2;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+@Service
+@RequiredArgsConstructor
+@Log4j2
+public class HolidayServiceImpl implements HolidayService {
+
+    private final HolidayRepository holidayRepository;
+    private final ItineraryService itineraryService;
+    private final HolidayMapper holidayMapper;
+    private final LocationRepository locationRepository;
+    private final DashboardConfigService dashboardConfigService;
+    private final DashboardConfigRepository dashboardConfigRepository;
+
+    @Override
+    @Transactional
+    public Holiday save(final Holiday holiday) {
+        log.info("save holiday: {}", holiday);
+        final Itinerary itinerary = Optional.ofNullable(holiday.itinerary())
+                .map(Itinerary::id)
+                .map(itineraryService::getItineraryById)
+                .orElseGet(() -> itineraryService.save(holiday.itinerary()));
+        final Holiday updateHoliday = holiday.withItinerary(itinerary)
+                .withLocation(itinerary.location());
+        final HolidayDb holidayDb = holidayRepository.save(holidayMapper.toDatabase(updateHoliday));
+
+        return holidayMapper.toModel(holidayDb);
+    }
+
+    @Override
+    @Transactional
+    public List<Holiday> saveAll(final List<Holiday> holidays) {
+        log.info("save holidays: {}", holidays);
+        return holidays.stream().map(this::save).toList();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public HolidayDashboard holidayDashboard() {
+
+
+        final Map<Section, DashboardConfig> dashboardConfigMap = dashboardConfigService
+                .getByType(DashboardConfig.Type.HOLIDAYS)
+                .stream()
+                .collect(Collectors.toMap(DashboardConfig::section, Function.identity()));
+
+        return HolidayDashboard.builder()
+                .heroImageUrl("hero-image-url")
+                .topDestinations(populatePriceLocation(dashboardConfigMap.get(Section.TOP_DESTINATIONS)))
+                .build();
+
+    }
+
+    @SneakyThrows
+    private List<DashboardData> populatePriceLocation(final DashboardConfig dashboardConfig) {
+
+        final Map<String, DashboardData> dashboardDataMap = Optional.ofNullable(dashboardConfig)
+                .map(DashboardConfig::dashboardData)
+                .map(dashboardData -> dashboardData.stream()
+                        .collect(Collectors.toMap(this::generateKey, Function.identity())))
+                .orElseThrow(() -> new RuntimeException("No dashboard data found"));
+
+        // Launch three asynchronous calls to the repository.
+        final CompletableFuture<List<LocationPriceProjection>> cityFuture = CompletableFuture.supplyAsync(
+                () -> holidayRepository.findLowestPriceByCity(dashboardDataMap.keySet()
+                        .stream()
+                        .filter(string -> string.startsWith("CITY-"))
+                        .toList()));
+
+
+        final CompletableFuture<List<LocationPriceProjection>> stateFuture = CompletableFuture.supplyAsync(
+                () -> holidayRepository.findLowestPriceByState(dashboardDataMap.keySet()
+                        .stream()
+                        .filter(string -> string.startsWith("STATE-"))
+                        .toList()));
+
+        final CompletableFuture<List<LocationPriceProjection>> countryFuture = CompletableFuture.supplyAsync(
+                () -> holidayRepository.findLowestPriceByCountry(dashboardDataMap.keySet()
+                        .stream()
+                        .filter(string -> string.startsWith("COUNTRY-"))
+                        .toList()));
+
+        // Wait for all futures and collect results into a single list
+        final List<LocationPriceProjection> priceProjections = Stream.of(cityFuture, stateFuture, countryFuture)
+                .map(CompletableFuture::join)
+                .flatMap(List::stream)
+                .toList();
+
+        return priceProjections.stream()
+                .map(projection -> {
+                    final String key = switch (projection.getType()) {
+                        case "CITY" -> String.join("-", "CITY",
+                                projection.getCityCode(), projection.getStateCode(), projection.getCountryCode());
+                        case "STATE" -> String.join("-", "STATE",
+                                projection.getStateCode(), projection.getCountryCode());
+                        case "COUNTRY" -> String.join("-", "COUNTRY",
+                                projection.getCountryCode());
+                        default -> throw new IllegalStateException("Unexpected value: " + projection.getType());
+                    };
+                    final DashboardData data = dashboardDataMap.get(key);
+                    return DashboardData.builder()
+                            .displayName(projection.getDisplayName())
+                            .price(projection.getStandardPrice())
+                            .imageUrl(data.imageUrl())
+                            .order(data.order())
+                            .build();
+
+                }).sorted(Comparator.comparing(DashboardData::order))
+                .toList();
+    }
+
+
+    private String generateKey(final DashboardData data) {
+        return switch (data.displayTarget()) {
+            case CITY -> String.join("-", data.displayTarget().name(), data.cityCode(), data.stateCode(),
+                    data.countryCode());
+            case STATE -> String.join("-", data.displayTarget().name(), data.stateCode(),
+                    data.countryCode());
+            case COUNTRY -> String.join("-", data.displayTarget().name(), data.countryCode());
+        };
+
+    }
+
+}

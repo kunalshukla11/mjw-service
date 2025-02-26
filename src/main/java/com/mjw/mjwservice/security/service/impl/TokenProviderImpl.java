@@ -11,6 +11,7 @@ import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
+import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -25,6 +26,7 @@ import java.util.Map;
 import java.util.Optional;
 
 @Service
+@Log4j2
 public class TokenProviderImpl implements TokenProvider {
 
     @Value("${security.jwt.secret-key}")
@@ -87,7 +89,7 @@ public class TokenProviderImpl implements TokenProvider {
         } catch (MalformedJwtException ex) {
             ex.printStackTrace();
         } catch (ExpiredJwtException ex) {
-            ex.printStackTrace();
+            log.error("Token expired {}", ex.getMessage());
         } catch (UnsupportedJwtException ex) {
             ex.printStackTrace();
         } catch (IllegalArgumentException ex) {

@@ -1,10 +1,10 @@
 databaseChangeLog:
   - changeSet:
-      id: create_package_table
+      id: create_holiday_table
       author: narendra
       changes:
         - createTable:
-            tableName: package
+            tableName: holiday
             schemaName: mjw_service
             columns:
               - column:
@@ -52,16 +52,16 @@ databaseChangeLog:
 
 
         - addForeignKeyConstraint:
-            constraintName: fk_package_location
-            baseTableName: package
+            constraintName: fk_holiday_location
+            baseTableName: holiday
             baseColumnNames: location_id
             referencedTableName: location
             referencedColumnNames: id
             onUpdate: CASCADE
             onDelete: CASCADE
         - addForeignKeyConstraint:
-            constraintName: fk_package_itinerary
-            baseTableName: package
+            constraintName: fk_holiday_itinerary
+            baseTableName: holiday
             baseColumnNames: itinerary_id
             referencedTableName: itinerary
             referencedColumnNames: id
@@ -69,29 +69,29 @@ databaseChangeLog:
             onDelete: CASCADE
         - addUniqueConstraint:
             columnNames: location_id, name
-            constraintName: unique_package
+            constraintName: unique_holiday
             schemaName: mjw_service
-            tableName: package
+            tableName: holiday
 
 
         - createIndex:
-            tableName: package
+            tableName: holiday
             schemaName: mjw_service
-            indexName: package_name
+            indexName: holiday_name
             columns:
               - column:
                   name: name
         - createIndex:
-            tableName: package
+            tableName: holiday
             schemaName: mjw_service
             indexName: itinerary_id
             columns:
               - column:
                   name: itinerary_id
         - createIndex:
-            tableName: package
+            tableName: holiday
             schemaName: mjw_service
-            indexName: package_location_id
+            indexName: holiday_location_id
             columns:
               - column:
                   name: location_id
