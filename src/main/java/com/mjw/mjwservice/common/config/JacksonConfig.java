@@ -1,4 +1,4 @@
-package com.mjw.mjwservice.security.config;
+package com.mjw.mjwservice.common.config;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -11,6 +11,7 @@ public class JacksonConfig {
     public ObjectMapper objectMapper() {
         final ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+        objectMapper.registerModule(new BigDecimalConfig().bigDecimalModule());
         return objectMapper;
     }
 

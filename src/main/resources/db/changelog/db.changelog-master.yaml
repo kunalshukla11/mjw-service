@@ -6,7 +6,9 @@ databaseChangeLog:
   - include:
       file: classpath:/db/changelog/changes/itinerary.yaml
   - include:
-      file: classpath:/db/changelog/changes/package.yaml
+      file: classpath:/db/changelog/changes/holiday.yaml
   - include:
       file: classpath:/db/changelog/changes/category.yaml
+  - include:
+      file: classpath:/db/changelog/changes/dashboard-config.yaml
 

@@ -4,11 +4,15 @@ import com.mjw.mjwservice.user.model.Validatable;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.Builder;
+import org.springframework.data.annotation.Id;
 
 import java.util.List;
 
 @Builder
 public record Location(
+
+        @Id
+        Long id,
         @NotBlank
         String city,
         @NotBlank

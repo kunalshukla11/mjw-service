@@ -1,0 +1,38 @@
+databaseChangeLog:
+  - changeSet:
+      id: create_dashboard_config
+      author: narendra
+      changes:
+        - createTable:
+            tableName: dashboard_config
+            schemaName: mjw_service
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: type
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: section
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: dashboard_data
+                  type: JSONB
+                  constraints:
+                    nullable: false
+
+        - addUniqueConstraint:
+            columnNames: type, section
+            constraintName: unique_dashboard_config
+            schemaName: mjw_service
+            tableName: dashboard_config
+
