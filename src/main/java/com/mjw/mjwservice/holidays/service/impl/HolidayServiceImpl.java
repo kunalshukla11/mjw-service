@@ -4,9 +4,8 @@ import com.mjw.mjwservice.common.model.dashboard.HolidayDashboard;
 import com.mjw.mjwservice.common.model.dashboard.Section;
 import com.mjw.mjwservice.common.model.dashboard.config.DashboardConfig;
 import com.mjw.mjwservice.common.model.dashboard.config.DashboardData;
-import com.mjw.mjwservice.common.repository.DashboardConfigRepository;
-import com.mjw.mjwservice.common.repository.LocationRepository;
 import com.mjw.mjwservice.common.service.DashboardConfigService;
+import com.mjw.mjwservice.common.service.ReviewService;
 import com.mjw.mjwservice.holidays.entity.HolidayDb;
 import com.mjw.mjwservice.holidays.entity.LocationPriceProjection;
 import com.mjw.mjwservice.holidays.mapper.HolidayMapper;
@@ -24,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
@@ -38,9 +38,8 @@ public class HolidayServiceImpl implements HolidayService {
     private final HolidayRepository holidayRepository;
     private final ItineraryService itineraryService;
     private final HolidayMapper holidayMapper;
-    private final LocationRepository locationRepository;
+    private final ReviewService reviewService;
     private final DashboardConfigService dashboardConfigService;
-    private final DashboardConfigRepository dashboardConfigRepository;
 
     @Override
     @Transactional
@@ -77,7 +76,35 @@ public class HolidayServiceImpl implements HolidayService {
         return HolidayDashboard.builder()
                 .heroImageUrl("hero-image-url")
                 .topDestinations(populatePriceLocation(dashboardConfigMap.get(Section.TOP_DESTINATIONS)))
+                .topPackages(populateTopPackages(dashboardConfigMap.get(Section.TOP_PACKAGES)))
+                .internationalDestinations(
+                        populatePriceLocation(dashboardConfigMap.get(Section.INTERNATIONAL_DESTINATIONS)))
+                .holidayThemes(dashboardConfigMap.get(Section.TOP_ATTRACTIONS).dashboardData())
+                .reviews(reviewService.getReviews())
                 .build();
+
+    }
+
+    private List<DashboardData> populateTopPackages(final DashboardConfig dashboardConfig) {
+        if (Objects.isNull(dashboardConfig.dashboardData()) || dashboardConfig.dashboardData().isEmpty()) {
+            return List.of();
+        }
+
+        final Map<Long, DashboardData> dashboardDataMap = dashboardConfig.dashboardData()
+                .stream()
+                .collect(Collectors.toMap(DashboardData::holidayId, Function.identity()));
+
+        return holidayRepository.findAllByIdIn(dashboardDataMap.keySet()).stream()
+                .map(holidayMapper::toModel)
+                .map(holiday -> {
+                    final DashboardData dashboardData = dashboardDataMap.get(holiday.id());
+                    return DashboardData.builder()
+                            .imageUrl(dashboardData.imageUrl())
+                            .displayName(holiday.name())
+                            .build();
+                })
+                .toList();
+
 
     }
 
