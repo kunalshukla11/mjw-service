@@ -15,7 +15,8 @@ public record DashboardData(@With
                             String stateCode,
                             String countryCode,
                             String imageUrl,
-                            DisplayTarget displayTarget) {
+                            DisplayTarget displayTarget,
+                            Long holidayId) {
 
     public enum DisplayTarget {
         CITY,

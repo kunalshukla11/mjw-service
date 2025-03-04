@@ -8,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Set;
 
 @Repository
 public interface HolidayRepository extends JpaRepository<HolidayDb, Long> {
@@ -49,5 +50,8 @@ public interface HolidayRepository extends JpaRepository<HolidayDb, Long> {
                   GROUP BY  l.country , l.country_code
             """, nativeQuery = true)
     List<LocationPriceProjection> findLowestPriceByCountry(@Param("countryKeys") List<String> countryKeys);
+
+
+    List<HolidayDb> findAllByIdIn(Set<Long> holidayIds);
 
 }

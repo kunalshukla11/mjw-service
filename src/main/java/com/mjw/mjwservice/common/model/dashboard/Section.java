@@ -7,7 +7,8 @@ public enum Section {
 
     TOP_DESTINATIONS("Top Destinations"),
     TOP_PACKAGES("Top Packages"),
-    INTERNATIONAL_DESTINATIONS("International Destinations");
+    INTERNATIONAL_DESTINATIONS("International Destinations"),
+    TOP_ATTRACTIONS("Top Attractions"),;
 
     private final String description;
 
