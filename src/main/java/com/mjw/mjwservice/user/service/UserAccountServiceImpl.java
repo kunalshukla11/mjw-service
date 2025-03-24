@@ -1,6 +1,6 @@
 package com.mjw.mjwservice.user.service;
 
-import com.mjw.mjwservice.security.model.LoginResponse;
+import com.mjw.mjwservice.security.model.ProfileResponse;
 import com.mjw.mjwservice.security.model.Token;
 import com.mjw.mjwservice.security.service.TokenProvider;
 import com.mjw.mjwservice.security.util.CookieUtil;
@@ -18,6 +18,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import static com.mjw.mjwservice.security.model.ProfileResponse.SuccessFailure.SUCCESS;
+
 @Service
 @RequiredArgsConstructor
 public class UserAccountServiceImpl implements UserAccountService {
@@ -30,7 +32,7 @@ public class UserAccountServiceImpl implements UserAccountService {
     private final CookieUtil cookieUtil;
 
     @Override
-    public ResponseEntity<LoginResponse> registerUser(final UserInfo userInfo) {
+    public ResponseEntity<ProfileResponse> registerUser(final UserInfo userInfo) {
         //validationOrchestrator.validate(userInfo, REGISTER_USER);
         final UserInfo userInfoWithEncodedPassword = userInfo.withPassword(passwordEncoder.encode(userInfo.password()));
         final UserInfoDb userInfoDatabase =
@@ -38,16 +40,14 @@ public class UserAccountServiceImpl implements UserAccountService {
         final HttpHeaders responseHeaders = new HttpHeaders();
         final Token newAccessToken = tokenProvider.generateAccessToken(userInfoDatabase);
         addAccessTokenCookie(responseHeaders, newAccessToken);
-        final LoginResponse loginResponse = LoginResponse.builder()
-                .message("Registration successful. Tokens are created in cookie.")
-                .successFailure(LoginResponse.SuccessFailure.SUCCESS)
-                .userId(userInfoDatabase.getId())
-                .build();
-        return ResponseEntity.ok().headers(responseHeaders).body(loginResponse);
+        final ProfileResponse profileResponse = userInfoMapper.toProfileResponse(userInfoDatabase)
+                .withMessage("Registration successful. Tokens are created in cookie.")
+                .withSuccessFailure(SUCCESS);
+        return ResponseEntity.ok().headers(responseHeaders).body(profileResponse);
     }
 
     @Override
-    public ResponseEntity<LoginResponse> login(final UserInfo userInfo, final String accessToken) {
+    public ResponseEntity<ProfileResponse> login(final UserInfo userInfo, final String accessToken) {
         final String email = userInfo.email();
         final UserInfoDb user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
@@ -67,17 +67,14 @@ public class UserAccountServiceImpl implements UserAccountService {
             addAccessTokenCookie(responseHeaders, newAccessToken);
 
         }
-
-        final LoginResponse loginResponse = LoginResponse.builder()
-                .message("Login successful. Tokens are created in cookie.")
-                .successFailure(LoginResponse.SuccessFailure.SUCCESS)
-                .userId(user.getId())
-                .build();
-        return ResponseEntity.ok().headers(responseHeaders).body(loginResponse);
+        final ProfileResponse profileResponse = userInfoMapper.toProfileResponse(user)
+                .withMessage("Login successful. Tokens are created in cookie.")
+                .withSuccessFailure(SUCCESS);
+        return ResponseEntity.ok().headers(responseHeaders).body(profileResponse);
     }
 
     @Override
-    public UserInfo.UserInfoSummery getUserProfile() {
+    public ProfileResponse getUserProfile() {
 
         final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         final UserInfoDb userInfoDatabase = (UserInfoDb) authentication.getPrincipal();
@@ -85,7 +82,8 @@ public class UserAccountServiceImpl implements UserAccountService {
         final UserInfoDb userInfoDatabase1 =
                 userRepository.findById(userInfoDatabase.getId()).orElseThrow(() -> new UsernameNotFoundException(
                         "User not found with id: " + userInfoDatabase.getId()));
-        return userInfoMapper.toUserSummery(userInfoDatabase1);
+
+        return userInfoMapper.toProfileResponse(userInfoDatabase1);
     }
 
     @Override
