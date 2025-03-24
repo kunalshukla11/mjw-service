@@ -1,6 +1,6 @@
 package com.mjw.mjwservice.user.controller;
 
-import com.mjw.mjwservice.security.model.LoginResponse;
+import com.mjw.mjwservice.security.model.ProfileResponse;
 import com.mjw.mjwservice.security.util.SecurityCipher;
 import com.mjw.mjwservice.user.model.UserInfo;
 import com.mjw.mjwservice.user.service.UserAccountService;
@@ -30,14 +30,14 @@ public class AuthController {
     private final AuthenticationManager authenticationManager;
 
     @PostMapping("/register")
-    public ResponseEntity<LoginResponse> register(
+    public ResponseEntity<ProfileResponse> register(
             final @Validator(validatingClass = UserInfo.class) UserInfo userInfo) {
         log.info("register user: {}", userInfo);
         return userAccountService.registerUser(userInfo);
     }
 
     @PostMapping("/login")
-    public ResponseEntity<LoginResponse> login(final @RequestBody UserInfo userInfo, final @CookieValue(name =
+    public ResponseEntity<ProfileResponse> login(final @RequestBody UserInfo userInfo, final @CookieValue(name =
             "auth_token",
             required = false) String accessToken) {
         log.info("login user: {}", userInfo);

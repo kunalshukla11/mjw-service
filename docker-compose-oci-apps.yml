@@ -26,6 +26,8 @@ services:
       - mjw_service
     environment:
       NODE_ENV: production
+      MJW_SERVICE_HOST: mjw_service
+      MJW_SERVICE_PORT: 8080
     env_file:
       # Specify the environment files as a list of strings
       - path: .env

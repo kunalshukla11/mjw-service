@@ -1,5 +1,6 @@
 package com.mjw.mjwservice.user.mapper;
 
+import com.mjw.mjwservice.security.model.ProfileResponse;
 import com.mjw.mjwservice.user.entity.UserInfoDb;
 import com.mjw.mjwservice.user.model.UserInfo;
 import org.mapstruct.Mapper;
@@ -19,7 +20,7 @@ public interface UserInfoMapper {
     UserInfo fromDatabase(UserInfoDb userInfoDatabase);
 
     @Mapping(target = "initial", source = ".", qualifiedByName = "toInitial")
-    UserInfo.UserInfoSummery toUserSummery(UserInfoDb userInfoDatabase);
+    ProfileResponse toProfileResponse(UserInfoDb userInfoDatabase);
 
     @Named("toInitial")
     default String translateToFullName(final UserInfoDb userInfoDatabase) {

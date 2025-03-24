@@ -1,6 +1,6 @@
 package com.mjw.mjwservice.user.controller;
 
-import com.mjw.mjwservice.user.model.UserInfo;
+import com.mjw.mjwservice.security.model.ProfileResponse;
 import com.mjw.mjwservice.user.service.UserAccountService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -18,7 +18,7 @@ public class UserAccountController {
     private final UserAccountService userAccountService;
 
     @GetMapping("/me")
-    public ResponseEntity<UserInfo.UserInfoSummery> me() {
+    public ResponseEntity<ProfileResponse> me() {
         return ResponseEntity.ok(userAccountService.getUserProfile());
     }
 }
