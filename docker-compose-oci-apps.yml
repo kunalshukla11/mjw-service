@@ -6,7 +6,7 @@ services:
       dockerfile: Dockerfile
     container_name: mjw_service_container
     environment:
-      DB_HOST: mjwdbvm.mjwsubnet.mjwvcn.oraclevcn.com
+      DB_HOST: {MJW_DB_HOST}
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     ports:
@@ -26,8 +26,6 @@ services:
       - mjw_service
     environment:
       NODE_ENV: production
-      MJW_SERVICE_HOST: mjw_service
-      MJW_SERVICE_PORT: 8080
     env_file:
       # Specify the environment files as a list of strings
       - path: .env
