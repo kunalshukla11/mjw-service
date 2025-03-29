@@ -6,7 +6,7 @@ services:
       dockerfile: Dockerfile
     container_name: mjw_service_container
     environment:
-      DB_HOST: {MJW_DB_HOST}
+      DB_HOST: ${MJW_DB_HOST}
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     ports:
