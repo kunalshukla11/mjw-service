@@ -1,0 +1,17 @@
+# App domains
+oci.dev.app.myjourneywings.com {
+    reverse_proxy mjw_app:3000
+}
+
+myjourneywings.com {
+    reverse_proxy mjw_app:3000
+}
+
+# Service domains
+oci.dev.service.myjourneywings.com {
+    reverse_proxy mjw_service:8080
+}
+
+oci.prod.service.myjourneywings.com {
+    reverse_proxy mjw_service:8080
+}

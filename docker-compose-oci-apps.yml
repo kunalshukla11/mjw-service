@@ -39,6 +39,28 @@ services:
     networks:
       - mjw_network
 
+  caddy:
+    image: caddy:2
+    container_name: caddy_container
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      - caddy_data:/data
+      - caddy_config:/config
+    networks:
+      - mjw_network
+
+
 networks:
   mjw_network:
     driver: bridge
+
+volumes:
+  caddy_data:
+  caddy_config:
+
