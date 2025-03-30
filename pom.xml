@@ -21,6 +21,7 @@
         <puppyCrawl.checkstyle.verion>10.15.0</puppyCrawl.checkstyle.verion>
         <jwt.version>0.11.5</jwt.version>
         <checkstyle-maven-plugin.version>3.3.1</checkstyle-maven-plugin.version>
+        <typescript-generator.version>3.2.1263</typescript-generator.version>
     </properties>
     <dependencies>
         <dependency>
@@ -182,6 +183,45 @@
                         <groupId>com.puppycrawl.tools</groupId>
                         <artifactId>checkstyle</artifactId>
                         <version>${puppyCrawl.checkstyle.verion}</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+            <plugin>
+                <groupId>cz.habarta.typescript-generator</groupId>
+                <artifactId>typescript-generator-maven-plugin</artifactId>
+                <version>${typescript-generator.version}</version>
+                <executions>
+                    <execution>
+                        <id>generate</id>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <phase>prepare-package</phase>
+                    </execution>
+                </executions>
+                <configuration>
+                    <jsonLibrary>jackson2</jsonLibrary>
+                    <generateSpringApplicationClient>true</generateSpringApplicationClient>
+                    <classesWithAnnotations>
+                        <classesWithAnnotation>com.mjw.mjwservice.common.utility.ClientModel</classesWithAnnotation>
+                    </classesWithAnnotations>
+                    <outputKind>module</outputKind>
+                    <outputFileType>implementationFile</outputFileType>
+                    <optionalAnnotations>
+                        <optionalAnnotation>jakarta.annotation.Nullable</optionalAnnotation>
+                    </optionalAnnotations>
+                    <optionalProperties>useSpecifiedAnnotations</optionalProperties>
+                </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>cz.habarta.typescript-generator</groupId>
+                        <artifactId>typescript-generator-spring</artifactId>
+                        <version>${typescript-generator.version}</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.jetbrains</groupId>
+                        <artifactId>annotations</artifactId>
+                        <version>26.0.1</version>
                     </dependency>
                 </dependencies>
             </plugin>
