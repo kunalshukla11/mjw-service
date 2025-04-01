@@ -43,12 +43,6 @@ services:
       - "3000:3000"
     networks:
       - mjw_network
-    healthcheck:
-      test: [ "CMD", "wget", "--spider", "-q",  "http://localhost:3000" ]
-      interval: 10s
-      retries: 5
-      start_period: 10s
-      timeout: 5s
 
   caddy:
     image: caddy:2
@@ -56,8 +50,6 @@ services:
     container_name: mjw_caddy_container
     depends_on:
       mjw_service:
-        condition: service_healthy
-      mjw_app:
         condition: service_healthy
     ports:
       - "80:80"
