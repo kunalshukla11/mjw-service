@@ -74,7 +74,7 @@ public class HolidayServiceImpl implements HolidayService {
                 .collect(Collectors.toMap(DashboardConfig::section, Function.identity()));
 
         return HolidayDashboard.builder()
-                .heroImageUrl("https://ik.imagekit.io/r4qffffod/Locations/image2.jpg?updatedAt=1741208339318")
+                .heroImageUrl("https://ik.imagekit.io/r4qffffod/Locations/Hero.jpg?updatedAt=1743526870060")
                 .topDestinations(populatePriceLocation(dashboardConfigMap.get(Section.TOP_DESTINATIONS)))
                 .topPackages(populateTopPackages(dashboardConfigMap.get(Section.TOP_PACKAGES)))
                 .internationalDestinations(
