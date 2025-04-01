@@ -30,6 +30,8 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static com.mjw.mjwservice.common.model.dashboard.Section.HERO_SECTION;
+
 @Service
 @RequiredArgsConstructor
 @Log4j2
@@ -73,8 +75,15 @@ public class HolidayServiceImpl implements HolidayService {
                 .stream()
                 .collect(Collectors.toMap(DashboardConfig::section, Function.identity()));
 
+
+
+
         return HolidayDashboard.builder()
-                .heroImageUrl("https://ik.imagekit.io/r4qffffod/Locations/Hero.jpg?updatedAt=1743526870060")
+                .heroImageUrl(Optional.ofNullable(dashboardConfigMap.get(HERO_SECTION))
+                        .map(DashboardConfig::dashboardData)
+                        .filter(dashboardData -> !dashboardData.isEmpty())
+                        .map(dashboardData -> dashboardData.get(0).imageUrl())
+                        .orElse("https://ik.imagekit.io/r4qffffod/Locations/image2.jpg?updatedAt=1741208339318"))
                 .topDestinations(populatePriceLocation(dashboardConfigMap.get(Section.TOP_DESTINATIONS)))
                 .topPackages(populateTopPackages(dashboardConfigMap.get(Section.TOP_PACKAGES)))
                 .internationalDestinations(
