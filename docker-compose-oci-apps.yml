@@ -14,7 +14,7 @@ services:
     networks:
       - mjw_network
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
+      test: [ "CMD", "wget", "--spider", "-q", "http://localhost:8080/actuator/health" ]
       interval: 10s
       retries: 5
       start_period: 10s
@@ -44,7 +44,7 @@ services:
     networks:
       - mjw_network
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:3000"]
+      test: [ "CMD", "wget", "--spider", "-q",  "http://localhost:3000" ]
       interval: 10s
       retries: 5
       start_period: 10s
