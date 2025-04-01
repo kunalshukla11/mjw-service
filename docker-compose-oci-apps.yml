@@ -13,6 +13,12 @@ services:
       - "8080:8080"
     networks:
       - mjw_network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
+      interval: 10s
+      retries: 5
+      start_period: 10s
+      timeout: 5s
 
   mjw_app:
     image: mjw_app:1.0.0
@@ -23,7 +29,8 @@ services:
       args:
         ENV_FILE: ${ENV_FILE:-.env}
     depends_on:
-      - mjw_service
+      mjw_service:
+        condition: service_healthy
     environment:
       NODE_ENV: production
     env_file:
@@ -36,11 +43,22 @@ services:
       - "3000:3000"
     networks:
       - mjw_network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000"]
+      interval: 10s
+      retries: 5
+      start_period: 10s
+      timeout: 5s
 
   caddy:
     image: caddy:2
     restart: unless-stopped
     container_name: mjw_caddy_container
+    depends_on:
+      mjw_service:
+        condition: service_healthy
+      mjw_app:
+        condition: service_healthy
     ports:
       - "80:80"
       - "443:443"
