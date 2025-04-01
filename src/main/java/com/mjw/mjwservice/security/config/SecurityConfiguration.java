@@ -68,7 +68,8 @@ public class SecurityConfiguration {
                         .requestMatchers("/api/auth/**",
                                 "/api/holiday/**",
                                 "/api/location/**",
-                                "/api/itinerary/**").permitAll()
+                                "/api/itinerary/**",
+                                "/actuator/**").permitAll()
                         .anyRequest().authenticated())
                 .sessionManagement(sessionManagement -> sessionManagement
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
