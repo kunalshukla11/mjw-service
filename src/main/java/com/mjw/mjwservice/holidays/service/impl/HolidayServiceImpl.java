@@ -88,6 +88,8 @@ public class HolidayServiceImpl implements HolidayService {
                 .topPackages(populateTopPackages(dashboardConfigMap.get(Section.TOP_PACKAGES)))
                 .internationalDestinations(
                         populatePriceLocation(dashboardConfigMap.get(Section.INTERNATIONAL_DESTINATIONS)))
+                .unexploredDestinations(
+                        populatePriceLocation(dashboardConfigMap.get(Section.UNEXPLORED_DESTINATIONS)))
                 .holidayThemes(dashboardConfigMap.get(Section.TOP_ATTRACTIONS).dashboardData())
                 .reviews(reviewService.getReviews())
                 .build();

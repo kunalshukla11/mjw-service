@@ -14,6 +14,7 @@ public record HolidayDashboard(
         List<DashboardData> topDestinations,
         List<DashboardData> topPackages,
         List<DashboardData> internationalDestinations,
+        List<DashboardData> unexploredDestinations,
 
         List<DashboardData> holidayThemes,
         List<Review> reviews) {
