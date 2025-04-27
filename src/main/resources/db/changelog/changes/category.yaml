@@ -31,6 +31,13 @@ databaseChangeLog:
             columns:
               - column:
                   name: holiday_id
+        - createIndex:
+            tableName: category
+            schemaName: mjw_service
+            indexName: category_name
+            columns:
+              - column:
+                  name: name
         - addForeignKeyConstraint:
             constraintName: fk_category_holiday
             baseTableName: category

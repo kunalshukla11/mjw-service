@@ -4,15 +4,21 @@ import com.mjw.mjwservice.holidays.model.Holiday;
 import com.mjw.mjwservice.common.model.dashboard.HolidayDashboard;
 import com.mjw.mjwservice.holidays.service.HolidayService;
 import com.mjw.mjwservice.holidays.service.ItineraryService;
+import com.mjw.mjwservice.validation.model.group.HolidayCreate;
+import com.mjw.mjwservice.validation.model.group.HolidayUpdate;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -28,7 +34,16 @@ public class HolidayController {
 
 
     @PostMapping(path = "/save", produces = "application/json", consumes = "application/json")
+    @Validated(HolidayCreate.class)
     public Holiday save(final @RequestBody @Valid Holiday holiday) {
+        return holidayService.save(holiday);
+    }
+
+
+
+    @PutMapping(path = "/update", produces = "application/json", consumes = "application/json")
+    @Validated(HolidayUpdate.class)
+    public Holiday update(final @RequestBody @Valid Holiday holiday) {
         return holidayService.save(holiday);
     }
 
@@ -47,6 +62,24 @@ public class HolidayController {
     @GetMapping(path = "/refresh-dashboard")
     public String refreshDashboard() {
         return  "refreshed";
+    }
+
+
+
+    @GetMapping(path = "/get-holidays", produces = "application/json")
+    public List<Holiday> getHolidays(final @RequestParam(required = false) String cityCode,
+                                     final @RequestParam(required = false) String stateCode,
+                                     final @RequestParam(required = false) String countryCode,
+                                     final @RequestParam(required = false) String themeCode) {
+        log.info("get holidays by city: {}, state: {}, country: {}, theme: {}", cityCode, stateCode, countryCode,
+                themeCode);
+        return holidayService.getHolidays(cityCode, stateCode, countryCode, themeCode);
+    }
+
+    @GetMapping(path = "/get/{id}", produces = "application/json")
+    public Holiday get(final @PathVariable Long id) {
+        log.info("get holidays by id: {}", id);
+        return holidayService.getHolidayById(id);
     }
 
 }

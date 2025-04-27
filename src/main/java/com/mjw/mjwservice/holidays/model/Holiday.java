@@ -2,17 +2,21 @@ package com.mjw.mjwservice.holidays.model;
 
 import com.mjw.mjwservice.common.model.Currency;
 import com.mjw.mjwservice.common.model.Location;
+import com.mjw.mjwservice.validation.model.group.HolidayUpdate;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.Builder;
 import lombok.With;
 import org.springframework.data.annotation.Id;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Builder
 public record Holiday(
         @Id
+        @NotNull(groups = {HolidayUpdate.class})
         Long id,
         @NotBlank
         String name,
@@ -30,7 +34,10 @@ public record Holiday(
         BigDecimal luxuryPrice,
 
         @NotNull
-        Currency currency
+        Currency currency,
+        @Size(min = 1, max = 1000)
+        @With
+        List<Category> categories
 ) {
 
 }

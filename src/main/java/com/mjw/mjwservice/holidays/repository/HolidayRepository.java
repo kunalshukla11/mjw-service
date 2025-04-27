@@ -51,6 +51,34 @@ public interface HolidayRepository extends JpaRepository<HolidayDb, Long> {
             """, nativeQuery = true)
     List<LocationPriceProjection> findLowestPriceByCountry(@Param("countryKeys") List<String> countryKeys);
 
+    //Given 3 parameters, cityCode, stateCode and countryCode, return all the holidays, using JPA
+    @Query("""
+            SELECT h FROM HOLIDAY h
+            JOIN h.location l
+            WHERE l.cityCode = :cityCode
+            AND l.stateCode = :stateCode
+            AND l.countryCode = :countryCode
+            """)
+    List<HolidayDb> findByCityStateCountry(@Param("cityCode") String cityCode,
+                                           @Param("stateCode") String stateCode,
+                                           @Param("countryCode") String countryCode);
+
+    @Query("""
+            SELECT h FROM HOLIDAY h
+            JOIN h.location l
+            WHERE l.stateCode = :stateCode
+            AND l.countryCode = :countryCode
+            """)
+    List<HolidayDb> findByStateCountry(@Param("stateCode") String stateCode,
+                                       @Param("countryCode") String countryCode);
+
+    @Query("""
+            SELECT h FROM HOLIDAY h
+            JOIN h.location l
+            WHERE l.countryCode = :countryCode
+            """)
+    List<HolidayDb> findByCountry(@Param("countryCode") String countryCode);
+
 
     List<HolidayDb> findAllByIdIn(Set<Long> holidayIds);
 

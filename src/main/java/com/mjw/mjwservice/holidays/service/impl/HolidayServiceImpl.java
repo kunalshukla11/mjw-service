@@ -11,6 +11,7 @@ import com.mjw.mjwservice.holidays.entity.LocationPriceProjection;
 import com.mjw.mjwservice.holidays.mapper.HolidayMapper;
 import com.mjw.mjwservice.holidays.model.Holiday;
 import com.mjw.mjwservice.holidays.model.Itinerary;
+import com.mjw.mjwservice.holidays.repository.CategoryRepository;
 import com.mjw.mjwservice.holidays.repository.HolidayRepository;
 import com.mjw.mjwservice.holidays.service.HolidayService;
 import com.mjw.mjwservice.holidays.service.ItineraryService;
@@ -42,6 +43,7 @@ public class HolidayServiceImpl implements HolidayService {
     private final HolidayMapper holidayMapper;
     private final ReviewService reviewService;
     private final DashboardConfigService dashboardConfigService;
+    private final CategoryRepository categoryRepository;
 
     @Override
     @Transactional
@@ -53,6 +55,25 @@ public class HolidayServiceImpl implements HolidayService {
                 .orElseGet(() -> itineraryService.save(holiday.itinerary()));
         final Holiday updateHoliday = holiday.withItinerary(itinerary)
                 .withLocation(itinerary.location());
+        final HolidayDb holidayDb = holidayRepository.save(holidayMapper.toDatabase(updateHoliday));
+        final HolidayDb savedHolidayDb = holidayDb.addCategories(holidayDb.getCategories());
+
+        return holidayMapper.toModel(savedHolidayDb);
+    }
+
+    @Override
+    @Transactional
+    public Holiday update(final Holiday holiday) {
+        log.info("update holiday: {}", holiday);
+        final Itinerary itinerary = Optional.ofNullable(holiday.itinerary())
+                .map(Itinerary::id)
+                .map(itineraryService::getItineraryById)
+                .map(dbItinerary -> holiday.itinerary().withId(dbItinerary.id()))
+                .orElseGet(() -> itineraryService.save(holiday.itinerary()));
+        final Holiday updateHoliday = holiday.withItinerary(itinerary)
+                .withLocation(itinerary.location())
+                .withCategories(holiday.categories());
+
         final HolidayDb holidayDb = holidayRepository.save(holidayMapper.toDatabase(updateHoliday));
 
         return holidayMapper.toModel(holidayDb);
@@ -94,6 +115,39 @@ public class HolidayServiceImpl implements HolidayService {
                 .reviews(reviewService.getReviews())
                 .build();
 
+    }
+
+    @Override
+    public List<Holiday> getHolidays(final String cityCode, final String stateCode, final String countryCode,
+                                     final String themeCode) {
+        log.info("getHolidays cityCode: {}, stateCode: {}, countryCode: {}, themeCode: {}", cityCode, stateCode,
+                countryCode, themeCode);
+
+        if (Objects.nonNull(cityCode) && Objects.nonNull(stateCode) && Objects.nonNull(countryCode)) {
+            return holidayRepository.findByCityStateCountry(cityCode, stateCode, countryCode)
+                    .stream()
+                    .map(holidayMapper::toModel)
+                    .toList();
+        } else if (Objects.nonNull(stateCode) && Objects.nonNull(countryCode)) {
+            return holidayRepository.findByStateCountry(stateCode, countryCode)
+                    .stream()
+                    .map(holidayMapper::toModel)
+                    .toList();
+        } else if (Objects.nonNull(countryCode)) {
+            return holidayRepository.findByCountry(countryCode)
+                    .stream()
+                    .map(holidayMapper::toModel)
+                    .toList();
+        }
+
+        return null;
+    }
+
+    @Override
+    public Holiday getHolidayById(final Long id) {
+        return holidayRepository.findById(id)
+                .map(holidayMapper::toModel)
+                .orElseThrow(() -> new RuntimeException("Holiday not found"));
     }
 
     private List<DashboardData> populateTopPackages(final DashboardConfig dashboardConfig) {

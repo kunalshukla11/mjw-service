@@ -10,6 +10,7 @@ import org.springframework.data.annotation.Id;
 @Builder
 public record Itinerary(
         @Id
+        @With
         Long id,
         @NotBlank String name,
         @With

@@ -10,8 +10,14 @@ public interface HolidayService {
 
     Holiday save(Holiday holiday);
 
+    Holiday update(Holiday holiday);
+
     List<Holiday> saveAll(List<Holiday> holidays);
 
     HolidayDashboard holidayDashboard();
+
+    List<Holiday> getHolidays(String cityCode, String stateCode, String countryCode, String themeCode);
+
+    Holiday getHolidayById(Long id);
 
 }
