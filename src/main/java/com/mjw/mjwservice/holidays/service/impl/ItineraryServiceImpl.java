@@ -2,6 +2,7 @@ package com.mjw.mjwservice.holidays.service.impl;
 
 import com.mjw.mjwservice.common.model.Location;
 import com.mjw.mjwservice.common.service.LocationService;
+import com.mjw.mjwservice.common.utility.Utils;
 import com.mjw.mjwservice.holidays.entity.ItineraryDb;
 import com.mjw.mjwservice.holidays.mapper.ItineraryMapper;
 import com.mjw.mjwservice.holidays.model.Itinerary;
@@ -9,7 +10,6 @@ import com.mjw.mjwservice.holidays.repository.ItineraryRepository;
 import com.mjw.mjwservice.holidays.service.ItineraryService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,9 +30,13 @@ public class ItineraryServiceImpl implements ItineraryService {
         final Location location = locationService.getLocationById(Optional.ofNullable(itinerary.location())
                 .map(Location::id)
                 .orElseThrow());
-        final Itinerary updatedItinerary = itinerary.withIdentifier(String.join("_", location.cityCode(),
-                location.countryCode(), itinerary.duration()
-                        .toString(), StringUtils.deleteWhitespace(itinerary.name())));
+        final Itinerary updatedItinerary = itinerary.withIdentifier(
+                Utils.itineraryIdentifier(
+                        location.cityCode(),
+                        location.countryCode(),
+                        itinerary.duration(),
+                        itinerary.name()
+                ));
         final ItineraryDb itineraryDb = itineraryRepository.save(itineraryMapper.toDatabase(updatedItinerary));
         return itineraryMapper.toModel(itineraryDb);
     }

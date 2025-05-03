@@ -11,9 +11,9 @@ import lombok.With;
 import org.springframework.data.annotation.Id;
 
 import java.math.BigDecimal;
-import java.util.List;
+import java.util.Set;
 
-@Builder
+@Builder(toBuilder = true)
 public record Holiday(
         @Id
         @NotNull(groups = {HolidayUpdate.class})
@@ -37,7 +37,7 @@ public record Holiday(
         Currency currency,
         @Size(min = 1, max = 1000)
         @With
-        List<Category> categories
+        Set<Category> categories
 ) {
 
 }

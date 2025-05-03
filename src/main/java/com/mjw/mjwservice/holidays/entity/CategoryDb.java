@@ -3,7 +3,6 @@ package com.mjw.mjwservice.holidays.entity;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.mjw.mjwservice.holidays.model.CategoryName;
 import com.mjw.mjwservice.holidays.model.HasHoliday;
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -19,16 +18,12 @@ import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 @Builder
 @Data
-@Getter
-@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity(name = "CATEGORY")

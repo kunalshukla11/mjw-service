@@ -44,7 +44,7 @@ public class HolidayController {
     @PutMapping(path = "/update", produces = "application/json", consumes = "application/json")
     @Validated(HolidayUpdate.class)
     public Holiday update(final @RequestBody @Valid Holiday holiday) {
-        return holidayService.save(holiday);
+        return holidayService.update(holiday);
     }
 
     @PostMapping(path = "/saveAll", produces = "application/json", consumes = "application/json")

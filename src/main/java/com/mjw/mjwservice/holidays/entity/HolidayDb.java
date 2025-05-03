@@ -22,7 +22,9 @@ import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.apache.commons.collections.CollectionUtils;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
@@ -47,7 +49,7 @@ public class HolidayDb {
     @Column(name = "NAME")
     private String name;
 
-    @ManyToOne(cascade = CascadeType.MERGE)
+    @ManyToOne(targetEntity = LocationDb.class)
     @JoinColumn(name = "LOCATION_ID", referencedColumnName = "ID",
             foreignKey = @ForeignKey(name = "fk_holiday_location"))
     @OnDelete(action = OnDeleteAction.CASCADE)
@@ -60,8 +62,9 @@ public class HolidayDb {
     private ItineraryDb itinerary;
 
     @JsonManagedReference(value = "categories")
-    @OneToMany(mappedBy = "holiday", cascade = CascadeType.ALL,  fetch = FetchType.EAGER)
-    //@OneToMany(mappedBy = "holiday", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "holiday", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private Set<CategoryDb> categories;
 
     @Column(name = "STANDARD_PRICE")

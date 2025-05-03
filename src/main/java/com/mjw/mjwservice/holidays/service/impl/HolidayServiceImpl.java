@@ -4,8 +4,10 @@ import com.mjw.mjwservice.common.model.dashboard.HolidayDashboard;
 import com.mjw.mjwservice.common.model.dashboard.Section;
 import com.mjw.mjwservice.common.model.dashboard.config.DashboardConfig;
 import com.mjw.mjwservice.common.model.dashboard.config.DashboardData;
+import com.mjw.mjwservice.common.repository.LocationRepository;
 import com.mjw.mjwservice.common.service.DashboardConfigService;
 import com.mjw.mjwservice.common.service.ReviewService;
+import com.mjw.mjwservice.common.utility.Utils;
 import com.mjw.mjwservice.holidays.entity.HolidayDb;
 import com.mjw.mjwservice.holidays.entity.LocationPriceProjection;
 import com.mjw.mjwservice.holidays.mapper.HolidayMapper;
@@ -21,6 +23,7 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -44,19 +47,22 @@ public class HolidayServiceImpl implements HolidayService {
     private final ReviewService reviewService;
     private final DashboardConfigService dashboardConfigService;
     private final CategoryRepository categoryRepository;
+    private final LocationRepository locationRepository;
 
     @Override
     @Transactional
     public Holiday save(final Holiday holiday) {
         log.info("save holiday: {}", holiday);
-        final Itinerary itinerary = Optional.ofNullable(holiday.itinerary())
+        final HolidayDb savedHolidayDb = Optional.ofNullable(holiday.itinerary())
                 .map(Itinerary::id)
                 .map(itineraryService::getItineraryById)
-                .orElseGet(() -> itineraryService.save(holiday.itinerary()));
-        final Holiday updateHoliday = holiday.withItinerary(itinerary)
-                .withLocation(itinerary.location());
-        final HolidayDb holidayDb = holidayRepository.save(holidayMapper.toDatabase(updateHoliday));
-        final HolidayDb savedHolidayDb = holidayDb.addCategories(holidayDb.getCategories());
+                .or(() -> Optional.of(itineraryService.save(holiday.itinerary())))
+                .map(itinerary -> holiday.withItinerary(itinerary)
+                        .withLocation(itinerary.location()))
+                .map(holidayMapper::toDatabase)
+                .map(holidayDb -> holidayDb.addCategories(holidayDb.getCategories()))
+                .map(holidayRepository::save)
+                .orElseThrow(() -> new IllegalStateException("Failed to save holiday"));
 
         return holidayMapper.toModel(savedHolidayDb);
     }
@@ -65,18 +71,25 @@ public class HolidayServiceImpl implements HolidayService {
     @Transactional
     public Holiday update(final Holiday holiday) {
         log.info("update holiday: {}", holiday);
-        final Itinerary itinerary = Optional.ofNullable(holiday.itinerary())
-                .map(Itinerary::id)
-                .map(itineraryService::getItineraryById)
-                .map(dbItinerary -> holiday.itinerary().withId(dbItinerary.id()))
-                .orElseGet(() -> itineraryService.save(holiday.itinerary()));
-        final Holiday updateHoliday = holiday.withItinerary(itinerary)
-                .withLocation(itinerary.location())
-                .withCategories(holiday.categories());
 
-        final HolidayDb holidayDb = holidayRepository.save(holidayMapper.toDatabase(updateHoliday));
+        // Get existing holiday
+        final HolidayDb existingHoliday = holidayRepository.findById(holiday.id())
+                .orElseThrow(() -> new IllegalStateException("Holiday not found with id: " + holiday.id()));
 
-        return holidayMapper.toModel(holidayDb);
+
+        // Merge
+        final Holiday updatedHoliday = holidayMapper.merge(holiday, holidayMapper.toModel(existingHoliday).toBuilder());
+
+        final HolidayDb existingHolidayDb = Optional.of(updatedHoliday)
+                .map(holidayMapper::toDatabase)
+                .map(this::updateItineraryIdentifier)
+                .map(holidayDb -> holidayDb.addCategories(holidayDb.getCategories()))
+                .orElseThrow();
+
+        // Save
+        final HolidayDb saved = holidayRepository.save(existingHolidayDb);
+
+        return holidayMapper.toModel(saved);
     }
 
     @Override
@@ -140,7 +153,7 @@ public class HolidayServiceImpl implements HolidayService {
                     .toList();
         }
 
-        return null;
+        return List.of();
     }
 
     @Override
@@ -171,6 +184,17 @@ public class HolidayServiceImpl implements HolidayService {
                 .toList();
 
 
+    }
+
+    private HolidayDb updateItineraryIdentifier(final HolidayDb holidayDb) {
+        holidayDb.getItinerary().setIdentifier(
+                Utils.itineraryIdentifier(
+                        holidayDb.getLocation().getCityCode(),
+                        holidayDb.getLocation().getCountryCode(),
+                        holidayDb.getItinerary().getDuration(),
+                        holidayDb.getItinerary().getName()
+                ));
+        return holidayDb;
     }
 
     @SneakyThrows
