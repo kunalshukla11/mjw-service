@@ -2,6 +2,7 @@ package com.mjw.mjwservice.holidays.controller;
 
 import com.mjw.mjwservice.holidays.model.Holiday;
 import com.mjw.mjwservice.common.model.dashboard.HolidayDashboard;
+import com.mjw.mjwservice.holidays.model.HolidaySearchRequest;
 import com.mjw.mjwservice.holidays.service.HolidayService;
 import com.mjw.mjwservice.holidays.service.ItineraryService;
 import com.mjw.mjwservice.validation.model.group.HolidayCreate;
@@ -18,7 +19,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -66,14 +66,10 @@ public class HolidayController {
 
 
 
-    @GetMapping(path = "/get-holidays", produces = "application/json")
-    public List<Holiday> getHolidays(final @RequestParam(required = false) String cityCode,
-                                     final @RequestParam(required = false) String stateCode,
-                                     final @RequestParam(required = false) String countryCode,
-                                     final @RequestParam(required = false) String themeCode) {
-        log.info("get holidays by city: {}, state: {}, country: {}, theme: {}", cityCode, stateCode, countryCode,
-                themeCode);
-        return holidayService.getHolidays(cityCode, stateCode, countryCode, themeCode);
+    @PostMapping(path = "/search-holidays", produces = "application/json")
+    public List<Holiday> searchHolidays(@RequestBody final HolidaySearchRequest holidaySearchRequest) {
+       log.info("search holidays: {}", holidaySearchRequest);
+        return holidayService.searchHolidays(holidaySearchRequest);
     }
 
     @GetMapping(path = "/get/{id}", produces = "application/json")

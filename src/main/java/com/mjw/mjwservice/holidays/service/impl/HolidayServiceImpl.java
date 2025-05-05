@@ -12,14 +12,17 @@ import com.mjw.mjwservice.holidays.entity.HolidayDb;
 import com.mjw.mjwservice.holidays.entity.LocationPriceProjection;
 import com.mjw.mjwservice.holidays.mapper.HolidayMapper;
 import com.mjw.mjwservice.holidays.model.Holiday;
+import com.mjw.mjwservice.holidays.model.HolidaySearchRequest;
 import com.mjw.mjwservice.holidays.model.Itinerary;
 import com.mjw.mjwservice.holidays.repository.CategoryRepository;
 import com.mjw.mjwservice.holidays.repository.HolidayRepository;
+import com.mjw.mjwservice.holidays.repository.HolidaySpecification;
 import com.mjw.mjwservice.holidays.service.HolidayService;
 import com.mjw.mjwservice.holidays.service.ItineraryService;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -130,30 +133,18 @@ public class HolidayServiceImpl implements HolidayService {
 
     }
 
+    // Replace the old getHolidays method with this one
     @Override
-    public List<Holiday> getHolidays(final String cityCode, final String stateCode, final String countryCode,
-                                     final String themeCode) {
-        log.info("getHolidays cityCode: {}, stateCode: {}, countryCode: {}, themeCode: {}", cityCode, stateCode,
-                countryCode, themeCode);
+    @Transactional(readOnly = true) // Add transactional annotation
+    public List<Holiday> searchHolidays(final HolidaySearchRequest searchRequest) {
+        log.info("Searching holidays with criteria: {}", searchRequest);
 
-        if (Objects.nonNull(cityCode) && Objects.nonNull(stateCode) && Objects.nonNull(countryCode)) {
-            return holidayRepository.findByCityStateCountry(cityCode, stateCode, countryCode)
-                    .stream()
-                    .map(holidayMapper::toModel)
-                    .toList();
-        } else if (Objects.nonNull(stateCode) && Objects.nonNull(countryCode)) {
-            return holidayRepository.findByStateCountry(stateCode, countryCode)
-                    .stream()
-                    .map(holidayMapper::toModel)
-                    .toList();
-        } else if (Objects.nonNull(countryCode)) {
-            return holidayRepository.findByCountry(countryCode)
-                    .stream()
-                    .map(holidayMapper::toModel)
-                    .toList();
-        }
+        Specification<HolidayDb> spec = HolidaySpecification.findByCriteria(searchRequest);
 
-        return List.of();
+        return holidayRepository.findAll(spec)
+                .stream()
+                .map(holidayMapper::toModel)
+                .toList();
     }
 
     @Override

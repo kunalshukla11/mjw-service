@@ -2,6 +2,7 @@ package com.mjw.mjwservice.holidays.service;
 
 import com.mjw.mjwservice.common.model.dashboard.HolidayDashboard;
 import com.mjw.mjwservice.holidays.model.Holiday;
+import com.mjw.mjwservice.holidays.model.HolidaySearchRequest;
 
 import java.util.List;
 
@@ -16,7 +17,7 @@ public interface HolidayService {
 
     HolidayDashboard holidayDashboard();
 
-    List<Holiday> getHolidays(String cityCode, String stateCode, String countryCode, String themeCode);
+    List<Holiday> searchHolidays(HolidaySearchRequest holidaySearchRequest);
 
     Holiday getHolidayById(Long id);
 

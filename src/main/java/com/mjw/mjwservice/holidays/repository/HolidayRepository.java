@@ -3,6 +3,7 @@ package com.mjw.mjwservice.holidays.repository;
 import com.mjw.mjwservice.holidays.entity.HolidayDb;
 import com.mjw.mjwservice.holidays.entity.LocationPriceProjection;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -11,7 +12,7 @@ import java.util.List;
 import java.util.Set;
 
 @Repository
-public interface HolidayRepository extends JpaRepository<HolidayDb, Long> {
+public interface HolidayRepository extends JpaRepository<HolidayDb, Long>, JpaSpecificationExecutor<HolidayDb> {
 
     @Query(value = """
              SELECT 'CITY' as type, MIN(h.standard_price) as standard_price ,
@@ -50,35 +51,6 @@ public interface HolidayRepository extends JpaRepository<HolidayDb, Long> {
                   GROUP BY  l.country , l.country_code
             """, nativeQuery = true)
     List<LocationPriceProjection> findLowestPriceByCountry(@Param("countryKeys") List<String> countryKeys);
-
-    //Given 3 parameters, cityCode, stateCode and countryCode, return all the holidays, using JPA
-    @Query("""
-            SELECT h FROM HOLIDAY h
-            JOIN h.location l
-            WHERE l.cityCode = :cityCode
-            AND l.stateCode = :stateCode
-            AND l.countryCode = :countryCode
-            """)
-    List<HolidayDb> findByCityStateCountry(@Param("cityCode") String cityCode,
-                                           @Param("stateCode") String stateCode,
-                                           @Param("countryCode") String countryCode);
-
-    @Query("""
-            SELECT h FROM HOLIDAY h
-            JOIN h.location l
-            WHERE l.stateCode = :stateCode
-            AND l.countryCode = :countryCode
-            """)
-    List<HolidayDb> findByStateCountry(@Param("stateCode") String stateCode,
-                                       @Param("countryCode") String countryCode);
-
-    @Query("""
-            SELECT h FROM HOLIDAY h
-            JOIN h.location l
-            WHERE l.countryCode = :countryCode
-            """)
-    List<HolidayDb> findByCountry(@Param("countryCode") String countryCode);
-
 
     List<HolidayDb> findAllByIdIn(Set<Long> holidayIds);
 
