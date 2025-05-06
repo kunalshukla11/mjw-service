@@ -4,7 +4,6 @@ import com.mjw.mjwservice.common.model.dashboard.HolidayDashboard;
 import com.mjw.mjwservice.common.model.dashboard.Section;
 import com.mjw.mjwservice.common.model.dashboard.config.DashboardConfig;
 import com.mjw.mjwservice.common.model.dashboard.config.DashboardData;
-import com.mjw.mjwservice.common.repository.LocationRepository;
 import com.mjw.mjwservice.common.service.DashboardConfigService;
 import com.mjw.mjwservice.common.service.ReviewService;
 import com.mjw.mjwservice.common.utility.Utils;
@@ -14,7 +13,6 @@ import com.mjw.mjwservice.holidays.mapper.HolidayMapper;
 import com.mjw.mjwservice.holidays.model.Holiday;
 import com.mjw.mjwservice.holidays.model.HolidaySearchRequest;
 import com.mjw.mjwservice.holidays.model.Itinerary;
-import com.mjw.mjwservice.holidays.repository.CategoryRepository;
 import com.mjw.mjwservice.holidays.repository.HolidayRepository;
 import com.mjw.mjwservice.holidays.repository.HolidaySpecification;
 import com.mjw.mjwservice.holidays.service.HolidayService;
@@ -26,7 +24,6 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -49,8 +46,6 @@ public class HolidayServiceImpl implements HolidayService {
     private final HolidayMapper holidayMapper;
     private final ReviewService reviewService;
     private final DashboardConfigService dashboardConfigService;
-    private final CategoryRepository categoryRepository;
-    private final LocationRepository locationRepository;
 
     @Override
     @Transactional
@@ -119,7 +114,7 @@ public class HolidayServiceImpl implements HolidayService {
                 .heroImageUrl(Optional.ofNullable(dashboardConfigMap.get(HERO_SECTION))
                         .map(DashboardConfig::dashboardData)
                         .filter(dashboardData -> !dashboardData.isEmpty())
-                        .map(dashboardData -> dashboardData.get(0).imageUrl())
+                        .map(dashboardData -> dashboardData.getFirst().imageUrl())
                         .orElse("https://ik.imagekit.io/r4qffffod/Locations/image2.jpg?updatedAt=1741208339318"))
                 .topDestinations(populatePriceLocation(dashboardConfigMap.get(Section.TOP_DESTINATIONS)))
                 .topPackages(populateTopPackages(dashboardConfigMap.get(Section.TOP_PACKAGES)))
@@ -139,7 +134,7 @@ public class HolidayServiceImpl implements HolidayService {
     public List<Holiday> searchHolidays(final HolidaySearchRequest searchRequest) {
         log.info("Searching holidays with criteria: {}", searchRequest);
 
-        Specification<HolidayDb> spec = HolidaySpecification.findByCriteria(searchRequest);
+        final Specification<HolidayDb> spec = HolidaySpecification.findByCriteria(searchRequest);
 
         return holidayRepository.findAll(spec)
                 .stream()
@@ -239,6 +234,11 @@ public class HolidayServiceImpl implements HolidayService {
                             .displayName(projection.getDisplayName())
                             .price(projection.getStandardPrice())
                             .imageUrl(data.imageUrl())
+                            .displayTarget(DashboardData.DisplayTarget.valueOf(projection.getType()))
+                            .cityCode(Objects.nonNull(projection.getCityCode()) ? projection.getCityCode() : null)
+                            .stateCode(Objects.nonNull(projection.getStateCode()) ? projection.getStateCode() : null)
+                            .countryCode(Objects.nonNull(projection.getCountryCode()) ? projection.getCountryCode() :
+                                    null)
                             .order(data.order())
                             .build();
 

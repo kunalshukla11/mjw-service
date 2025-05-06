@@ -1,10 +1,10 @@
 package com.mjw.mjwservice.holidays.controller;
 
-import com.mjw.mjwservice.holidays.model.Holiday;
 import com.mjw.mjwservice.common.model.dashboard.HolidayDashboard;
+import com.mjw.mjwservice.holidays.model.Holiday;
 import com.mjw.mjwservice.holidays.model.HolidaySearchRequest;
-import com.mjw.mjwservice.holidays.service.HolidayService;
 import com.mjw.mjwservice.holidays.service.ItineraryService;
+import com.mjw.mjwservice.holidays.service.impl.HolidayServiceImpl;
 import com.mjw.mjwservice.validation.model.group.HolidayCreate;
 import com.mjw.mjwservice.validation.model.group.HolidayUpdate;
 import jakarta.validation.Valid;
@@ -29,7 +29,7 @@ import java.util.List;
 @Log4j2
 public class HolidayController {
 
-    private final HolidayService holidayService;
+    private final HolidayServiceImpl holidayService;
     private final ItineraryService itineraryService;
 
 
@@ -65,10 +65,9 @@ public class HolidayController {
     }
 
 
-
     @PostMapping(path = "/search-holidays", produces = "application/json")
     public List<Holiday> searchHolidays(@RequestBody final HolidaySearchRequest holidaySearchRequest) {
-       log.info("search holidays: {}", holidaySearchRequest);
+        log.info("search holidays: {}", holidaySearchRequest);
         return holidayService.searchHolidays(holidaySearchRequest);
     }
 
