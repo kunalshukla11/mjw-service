@@ -61,11 +61,11 @@ public class HolidayDb {
     @OnDelete(action = OnDeleteAction.CASCADE)
     private ItineraryDb itinerary;
 
-    @JsonManagedReference(value = "categories")
+    @JsonManagedReference(value = "holidayThemes")
     @OneToMany(mappedBy = "holiday", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    private Set<CategoryDb> categories;
+    private Set<HolidayThemeDb> holidayThemes;
 
     @Column(name = "STANDARD_PRICE")
     private BigDecimal standardPrice;
@@ -80,9 +80,9 @@ public class HolidayDb {
     @Enumerated(EnumType.STRING)
     private Currency currency;
 
-    public HolidayDb addCategories(final Set<CategoryDb> categories) {
-        this.categories = categories;
-        return fixSet(this.categories);
+    public HolidayDb addHolidayThemes(final Set<HolidayThemeDb> holidayThemes) {
+        this.holidayThemes = holidayThemes;
+        return fixSet(this.holidayThemes);
     }
 
     private <T extends HasHoliday> HolidayDb fixSet(final Set<T> categories) {

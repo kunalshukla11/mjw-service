@@ -58,7 +58,7 @@ public class HolidayServiceImpl implements HolidayService {
                 .map(itinerary -> holiday.withItinerary(itinerary)
                         .withLocation(itinerary.location()))
                 .map(holidayMapper::toDatabase)
-                .map(holidayDb -> holidayDb.addCategories(holidayDb.getCategories()))
+                .map(holidayDb -> holidayDb.addHolidayThemes(holidayDb.getHolidayThemes()))
                 .map(holidayRepository::save)
                 .orElseThrow(() -> new IllegalStateException("Failed to save holiday"));
 
@@ -81,7 +81,7 @@ public class HolidayServiceImpl implements HolidayService {
         final HolidayDb existingHolidayDb = Optional.of(updatedHoliday)
                 .map(holidayMapper::toDatabase)
                 .map(this::updateItineraryIdentifier)
-                .map(holidayDb -> holidayDb.addCategories(holidayDb.getCategories()))
+                .map(holidayDb -> holidayDb.addHolidayThemes(holidayDb.getHolidayThemes()))
                 .orElseThrow();
 
         // Save
@@ -122,7 +122,7 @@ public class HolidayServiceImpl implements HolidayService {
                         populatePriceLocation(dashboardConfigMap.get(Section.INTERNATIONAL_DESTINATIONS)))
                 .unexploredDestinations(
                         populatePriceLocation(dashboardConfigMap.get(Section.UNEXPLORED_DESTINATIONS)))
-                .holidayThemes(dashboardConfigMap.get(Section.TOP_ATTRACTIONS).dashboardData())
+                .themedDestinations(dashboardConfigMap.get(Section.THEMED_DESTINATIONS).dashboardData())
                 .reviews(reviewService.getReviews())
                 .build();
 

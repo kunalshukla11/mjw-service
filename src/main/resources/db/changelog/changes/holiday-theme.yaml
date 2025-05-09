@@ -1,10 +1,10 @@
 databaseChangeLog:
   - changeSet:
-      id: create_category_table
+      id: create_holiday_theme_table
       author: narendra
       changes:
         - createTable:
-            tableName: category
+            tableName: holiday_theme
             schemaName: mjw_service
             columns:
               - column:
@@ -15,7 +15,7 @@ databaseChangeLog:
                     primaryKey: true
                     nullable: false
               - column:
-                  name: name
+                  name: theme
                   type: VARCHAR(255)
                   constraints:
                     nullable: false
@@ -25,22 +25,22 @@ databaseChangeLog:
                   constraints:
                     nullable: false
         - createIndex:
-            tableName: category
+            tableName: holiday_theme
             schemaName: mjw_service
-            indexName: category_holiday_id
+            indexName: theme_holiday_id
             columns:
               - column:
                   name: holiday_id
         - createIndex:
-            tableName: category
+            tableName: holiday_theme
             schemaName: mjw_service
-            indexName: category_name
+            indexName: holiday_theme_theme
             columns:
               - column:
-                  name: name
+                  name: theme
         - addForeignKeyConstraint:
-            constraintName: fk_category_holiday
-            baseTableName: category
+            constraintName: fk_holiday_theme_holiday
+            baseTableName: holiday_theme
             baseColumnNames: holiday_id
             referencedTableName: holiday
             referencedColumnNames: id

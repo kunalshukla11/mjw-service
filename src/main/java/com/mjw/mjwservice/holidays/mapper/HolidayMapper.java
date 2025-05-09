@@ -11,11 +11,11 @@ public interface HolidayMapper {
 
     public HolidayMapper INSTANCE = Mappers.getMapper(HolidayMapper.class);
 
+
     Holiday toModel(HolidayDb holidayDb);
 
     HolidayDb toDatabase(Holiday holiday);
 
-    Holiday merge(Holiday source, @MappingTarget  Holiday.HolidayBuilder target);
-
+    Holiday merge(Holiday source, @MappingTarget Holiday.HolidayBuilder target);
 
 }

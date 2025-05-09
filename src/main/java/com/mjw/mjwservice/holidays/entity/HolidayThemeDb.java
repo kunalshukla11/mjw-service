@@ -1,7 +1,7 @@
 package com.mjw.mjwservice.holidays.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.mjw.mjwservice.holidays.model.CategoryName;
+import com.mjw.mjwservice.holidays.model.Theme;
 import com.mjw.mjwservice.holidays.model.HasHoliday;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -26,23 +26,23 @@ import org.hibernate.annotations.OnDeleteAction;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity(name = "CATEGORY")
-@Table(name = "CATEGORY", schema = "MJW_SERVICE")
-public class CategoryDb implements HasHoliday {
+@Entity(name = "HOLIDAY_THEME")
+@Table(name = "HOLIDAY_THEME", schema = "MJW_SERVICE")
+public class HolidayThemeDb implements HasHoliday {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID")
     private Long id;
 
-    @Column(name = "NAME", nullable = false)
+    @Column(name = "THEME", nullable = false)
     @Enumerated(EnumType.STRING)
-    private CategoryName name;
+    private Theme theme;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "HOLIDAY_ID", referencedColumnName = "ID",
-            foreignKey = @ForeignKey(name = "fk_category_holiday"))
+            foreignKey = @ForeignKey(name = "fk_holiday_theme_holiday"))
     @OnDelete(action = OnDeleteAction.CASCADE)
-    @JsonBackReference(value = "categories")
+    @JsonBackReference(value = "holidayThemes")
     private HolidayDb holiday;
 }

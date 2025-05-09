@@ -1,7 +1,7 @@
 package com.mjw.mjwservice.holidays.repository;
 
 import com.mjw.mjwservice.common.entity.LocationDb;
-import com.mjw.mjwservice.holidays.entity.CategoryDb;
+import com.mjw.mjwservice.holidays.entity.HolidayThemeDb;
 import com.mjw.mjwservice.holidays.entity.HolidayDb;
 import com.mjw.mjwservice.holidays.model.HolidaySearchRequest;
 import jakarta.persistence.criteria.Join;
@@ -36,10 +36,10 @@ public class HolidaySpecification {
                 }
             }
 
-            // Join with CategoryDb if categoryName is present
-            if (request.categoryName() != null) {
-                final Join<HolidayDb, CategoryDb> categoryJoin = root.join("categories");
-                predicates.add(criteriaBuilder.equal(categoryJoin.get("name"), request.categoryName()));
+            // Join with HolidayThemeDb if any theme criteria is present
+            if (request.theme() != null) {
+                final Join<HolidayDb, HolidayThemeDb> holidayThemeDbJoin = root.join("holidayThemes");
+                predicates.add(criteriaBuilder.equal(holidayThemeDbJoin.get("theme"), request.theme()));
             }
 
             // Combine predicates with AND

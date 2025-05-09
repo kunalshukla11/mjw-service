@@ -1,6 +1,6 @@
 package com.mjw.mjwservice.holidays.model;
 
-public enum CategoryName {
+public enum Theme {
     CULTURE,
     ADVENTURE,
     BEACH,
