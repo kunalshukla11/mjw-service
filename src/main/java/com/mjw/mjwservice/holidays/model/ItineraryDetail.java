@@ -4,6 +4,7 @@ import lombok.Builder;
 
 @Builder
 public record ItineraryDetail(
-        String name) {
+        String name,
+        String mainImageUrl) {
 
 }

@@ -1,5 +1,6 @@
 package com.mjw.mjwservice.common.model.dashboard.config;
 
+import com.mjw.mjwservice.holidays.model.Theme;
 import lombok.Builder;
 import lombok.With;
 
@@ -16,12 +17,14 @@ public record DashboardData(@With
                             String countryCode,
                             String imageUrl,
                             DisplayTarget displayTarget,
+                            Theme theme,
                             Long holidayId) {
 
     public enum DisplayTarget {
         CITY,
         STATE,
-        COUNTRY
+        COUNTRY,
+        THEME,
     }
 
 }

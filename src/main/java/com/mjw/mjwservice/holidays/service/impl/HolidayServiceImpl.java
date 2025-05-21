@@ -254,6 +254,7 @@ public class HolidayServiceImpl implements HolidayService {
             case STATE -> String.join("-", data.displayTarget().name(), data.stateCode(),
                     data.countryCode());
             case COUNTRY -> String.join("-", data.displayTarget().name(), data.countryCode());
+            case THEME -> String.join("-", data.displayTarget().name(), data.theme().name());
         };
 
     }

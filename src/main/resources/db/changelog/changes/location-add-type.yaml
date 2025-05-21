@@ -1,0 +1,22 @@
+databaseChangeLog:
+  - changeSet:
+      id: add-type-column-to-location
+      author: narendra
+      changes:
+        - addColumn:
+            tableName: location
+            schemaName: mjw_service
+            columns:
+              - column:
+                  name: type
+                  type: VARCHAR(50)
+                  defaultValue: 'NA'
+                  constraints:
+                    nullable: false
+        - createIndex:
+            tableName: location
+            schemaName: mjw_service
+            indexName: location_type_idx
+            columns:
+              - column:
+                  name: type

@@ -1,20 +1,27 @@
 package com.mjw.mjwservice.holidays.model;
 
+import com.mjw.mjwservice.common.utility.ClientModel;
+import lombok.RequiredArgsConstructor;
+
+@RequiredArgsConstructor
+@ClientModel
 public enum Theme {
-    CULTURE,
-    ADVENTURE,
-    BEACH,
-    CRUISE,
-    FAMILY,
-    FOOD,
-    LUXURY,
-    NATURE,
-    RELAXATION,
-    SHOPPING,
-    SKIING,
-    SPORTS,
-    WELLNESS,
-    PILGRIMAGE,
-    PARTY,
-    WEDDING,
+    CULTURE("Culture"),
+    ADVENTURE("Adventure"),
+    BEACH("Beach"),
+    CRUISE("Cruise"),
+    FAMILY("Family"),
+    FOOD("Food"),
+    LUXURY("Luxury"),
+    NATURE("Nature"),
+    STAYCATION("Staycation"),
+    SHOPPING("Shopping"),
+    SKIING("Skiing"),
+    SPORTS("Sports"),
+    WELLNESS("Wellness"),
+    PILGRIMAGE("Pilgrimage"),
+    PARTY("Party"),
+    WEDDING("Wedding"),
+    HONEYMOON("Honeymoon"),;
+    private final String diplayName;
 }

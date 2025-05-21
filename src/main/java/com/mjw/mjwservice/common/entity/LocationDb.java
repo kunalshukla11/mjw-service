@@ -1,7 +1,10 @@
 package com.mjw.mjwservice.common.entity;
 
+import com.mjw.mjwservice.common.model.Location;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -46,6 +49,10 @@ public class LocationDb {
 
     @Column(name = "COUNTRY_CODE")
     private String countryCode;
+
+    @Column(name = "TYPE")
+    @Enumerated(EnumType.STRING)
+    private Location.Type type;
 
     @Column(name = "IMAGES_URL")
     private Set<String> imagesUrl;
