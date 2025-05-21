@@ -17,7 +17,7 @@ public interface HolidayService {
 
     HolidayDashboard holidayDashboard();
 
-    List<Holiday> searchHolidays(HolidaySearchRequest holidaySearchRequest);
+    List<Holiday> search(HolidaySearchRequest holidaySearchRequest);
 
     Holiday getHolidayById(Long id);
 

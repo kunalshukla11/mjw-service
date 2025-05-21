@@ -65,10 +65,10 @@ public class HolidayController {
     }
 
 
-    @PostMapping(path = "/search-holidays", produces = "application/json")
-    public List<Holiday> searchHolidays(@RequestBody final HolidaySearchRequest holidaySearchRequest) {
+    @PostMapping(path = "/search", produces = "application/json")
+    public List<Holiday> search(@RequestBody final HolidaySearchRequest holidaySearchRequest) {
         log.info("search holidays: {}", holidaySearchRequest);
-        return holidayService.searchHolidays(holidaySearchRequest);
+        return holidayService.search(holidaySearchRequest);
     }
 
     @GetMapping(path = "/get/{id}", produces = "application/json")

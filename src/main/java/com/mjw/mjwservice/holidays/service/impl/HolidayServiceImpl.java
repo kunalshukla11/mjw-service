@@ -131,7 +131,7 @@ public class HolidayServiceImpl implements HolidayService {
     // Replace the old getHolidays method with this one
     @Override
     @Transactional(readOnly = true) // Add transactional annotation
-    public List<Holiday> searchHolidays(final HolidaySearchRequest searchRequest) {
+    public List<Holiday> search(final HolidaySearchRequest searchRequest) {
         log.info("Searching holidays with criteria: {}", searchRequest);
 
         final Specification<HolidayDb> spec = HolidaySpecification.findByCriteria(searchRequest);
