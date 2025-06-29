@@ -1,26 +1,24 @@
 package com.mjw.mjwservice.holidays.mapper;
 
+import com.mjw.mjwservice.common.mapper.LocationMapper;
 import com.mjw.mjwservice.holidays.entity.HolidayDb;
 import com.mjw.mjwservice.holidays.entity.HolidayThemeDb;
 import com.mjw.mjwservice.holidays.model.Holiday;
 import com.mjw.mjwservice.holidays.model.HolidayTheme;
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.Named;
 import org.mapstruct.factory.Mappers;
 
 import java.util.Set;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = {LocationMapper.class})
 public interface HolidayMapper {
 
     public HolidayMapper INSTANCE = Mappers.getMapper(HolidayMapper.class);
 
-    @Mapping(target = "holidayThemes", source = "holidayThemes", qualifiedByName = "mapHolidayThemesFromDb")
     Holiday toModel(HolidayDb holidayDb);
 
-    @Mapping(target = "holidayThemes", source = "holidayThemes", qualifiedByName = "mapHolidayThemes")
     HolidayDb toDatabase(Holiday holiday);
 
     Holiday merge(Holiday source, @MappingTarget Holiday.HolidayBuilder target);
