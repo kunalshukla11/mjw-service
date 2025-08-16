@@ -12,5 +12,5 @@ databaseChangeLog:
   - include:
       file: classpath:/db/changelog/changes/dashboard-config.yaml
   - include:
-      file: classpath:/db/changelog/changes/location-add-type.yaml
+      file: classpath:/db/changelog/changes/location-add-city-state-image.yaml
 

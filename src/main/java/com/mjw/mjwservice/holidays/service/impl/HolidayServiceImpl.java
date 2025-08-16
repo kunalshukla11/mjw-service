@@ -12,6 +12,7 @@ import com.mjw.mjwservice.holidays.entity.LocationPriceProjection;
 import com.mjw.mjwservice.holidays.mapper.HolidayMapper;
 import com.mjw.mjwservice.holidays.model.Holiday;
 import com.mjw.mjwservice.holidays.model.HolidaySearchRequest;
+import com.mjw.mjwservice.holidays.model.HolidaySearchResponse;
 import com.mjw.mjwservice.holidays.model.Itinerary;
 import com.mjw.mjwservice.holidays.repository.HolidayRepository;
 import com.mjw.mjwservice.holidays.repository.HolidaySpecification;
@@ -131,15 +132,18 @@ public class HolidayServiceImpl implements HolidayService {
     // Replace the old getHolidays method with this one
     @Override
     @Transactional(readOnly = true) // Add transactional annotation
-    public List<Holiday> search(final HolidaySearchRequest searchRequest) {
+    public HolidaySearchResponse search(final HolidaySearchRequest searchRequest) {
         log.info("Searching holidays with criteria: {}", searchRequest);
+
+        final String heroImageUrl =
 
         final Specification<HolidayDb> spec = HolidaySpecification.findByCriteria(searchRequest);
 
-        return holidayRepository.findAll(spec)
+        final List<Holiday> holidays=  holidayRepository.findAll(spec)
                 .stream()
                 .map(holidayMapper::toModel)
                 .toList();
+        return HolidaySearchResponse.builder().holidays(holidays).build();
     }
 
     @Override

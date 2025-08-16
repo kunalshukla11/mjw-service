@@ -5,6 +5,7 @@ import com.mjw.mjwservice.common.mapper.LocationMapper;
 import com.mjw.mjwservice.common.model.Location;
 import com.mjw.mjwservice.common.repository.LocationRepository;
 import com.mjw.mjwservice.common.service.LocationService;
+import com.mjw.mjwservice.holidays.model.HolidaySearchRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
@@ -43,6 +44,12 @@ public class LocationServiceImpl implements LocationService {
     public Location getLocationById(final Long id) {
         return locationMapper.toModel(locationRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Location not found with id: " + id)));
+    }
+
+    @Override
+    public String getHeroImageUrlByHolidayRequest(final HolidaySearchRequest holidaySearchRequest) {
+
+        return "";
     }
 
 }

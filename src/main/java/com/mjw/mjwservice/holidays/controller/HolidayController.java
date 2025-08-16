@@ -3,6 +3,7 @@ package com.mjw.mjwservice.holidays.controller;
 import com.mjw.mjwservice.common.model.dashboard.HolidayDashboard;
 import com.mjw.mjwservice.holidays.model.Holiday;
 import com.mjw.mjwservice.holidays.model.HolidaySearchRequest;
+import com.mjw.mjwservice.holidays.model.HolidaySearchResponse;
 import com.mjw.mjwservice.holidays.service.ItineraryService;
 import com.mjw.mjwservice.holidays.service.impl.HolidayServiceImpl;
 import com.mjw.mjwservice.validation.model.group.HolidayCreate;
@@ -66,7 +67,7 @@ public class HolidayController {
 
 
     @PostMapping(path = "/search", produces = "application/json")
-    public List<Holiday> search(@RequestBody final HolidaySearchRequest holidaySearchRequest) {
+    public HolidaySearchResponse search(@RequestBody final HolidaySearchRequest holidaySearchRequest) {
         log.info("search holidays: {}", holidaySearchRequest);
         return holidayService.search(holidaySearchRequest);
     }

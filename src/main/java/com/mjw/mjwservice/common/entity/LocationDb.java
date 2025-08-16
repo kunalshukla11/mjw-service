@@ -1,10 +1,7 @@
 package com.mjw.mjwservice.common.entity;
 
-import com.mjw.mjwservice.common.model.Location;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -15,8 +12,6 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.util.Set;
 
 @Builder
 @Getter
@@ -50,11 +45,13 @@ public class LocationDb {
     @Column(name = "COUNTRY_CODE")
     private String countryCode;
 
-    @Column(name = "TYPE")
-    @Enumerated(EnumType.STRING)
-    private Location.Type type;
+    @Column(name = "CITY_IMAGE_URL")
+    private String cityImageUrl;
 
-    @Column(name = "IMAGES_URL")
-    private Set<String> imagesUrl;
+    @Column(name = "STATE_IMAGE_URL")
+    private String stateImageUrl;
+
+    @Column(name = "COUNTRY_IMAGE_URL")
+    private String countryImageUrl;
 
 }
