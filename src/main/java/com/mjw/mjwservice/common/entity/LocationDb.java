@@ -13,6 +13,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Set;
+
 @Builder
 @Getter
 @Setter
@@ -45,13 +47,7 @@ public class LocationDb {
     @Column(name = "COUNTRY_CODE")
     private String countryCode;
 
-    @Column(name = "CITY_IMAGE_URL")
-    private String cityImageUrl;
-
-    @Column(name = "STATE_IMAGE_URL")
-    private String stateImageUrl;
-
-    @Column(name = "COUNTRY_IMAGE_URL")
-    private String countryImageUrl;
+    @Column(name = "IMAGES_URL")
+    private Set<String> imagesUrl;
 
 }

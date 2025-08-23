@@ -135,11 +135,11 @@ public class HolidayServiceImpl implements HolidayService {
     public HolidaySearchResponse search(final HolidaySearchRequest searchRequest) {
         log.info("Searching holidays with criteria: {}", searchRequest);
 
-        final String heroImageUrl =
+        final String heroImageUrl = "hello;";
 
         final Specification<HolidayDb> spec = HolidaySpecification.findByCriteria(searchRequest);
 
-        final List<Holiday> holidays=  holidayRepository.findAll(spec)
+        final List<Holiday> holidays = holidayRepository.findAll(spec)
                 .stream()
                 .map(holidayMapper::toModel)
                 .toList();
