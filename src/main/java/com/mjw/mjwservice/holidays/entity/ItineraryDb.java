@@ -2,7 +2,6 @@ package com.mjw.mjwservice.holidays.entity;
 
 import com.mjw.mjwservice.common.entity.LocationDb;
 import com.mjw.mjwservice.holidays.model.ItineraryDetail;
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
@@ -41,7 +40,7 @@ public class ItineraryDb {
     private String identifier;
 
 
-    @ManyToOne(cascade = CascadeType.MERGE)
+    @ManyToOne(targetEntity = LocationDb.class)
     @JoinColumn(
             name = "LOCATION_ID",
             referencedColumnName = "id",

@@ -9,7 +9,7 @@ public enum Section {
     TOP_PACKAGES("Top Packages"),
     INTERNATIONAL_DESTINATIONS("International Destinations"),
     UNEXPLORED_DESTINATIONS("Unexplored Destinations"),
-    TOP_ATTRACTIONS("Top Attractions"),
+    THEMED_DESTINATIONS("Themed Destinations"),
     HERO_SECTION("Hero Section");
 
     private final String description;

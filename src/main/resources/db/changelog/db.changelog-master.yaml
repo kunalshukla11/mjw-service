@@ -8,7 +8,7 @@ databaseChangeLog:
   - include:
       file: classpath:/db/changelog/changes/holiday.yaml
   - include:
-      file: classpath:/db/changelog/changes/category.yaml
+      file: classpath:/db/changelog/changes/holiday-theme.yaml
   - include:
       file: classpath:/db/changelog/changes/dashboard-config.yaml
 

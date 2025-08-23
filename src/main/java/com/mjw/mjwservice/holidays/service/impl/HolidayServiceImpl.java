@@ -6,17 +6,22 @@ import com.mjw.mjwservice.common.model.dashboard.config.DashboardConfig;
 import com.mjw.mjwservice.common.model.dashboard.config.DashboardData;
 import com.mjw.mjwservice.common.service.DashboardConfigService;
 import com.mjw.mjwservice.common.service.ReviewService;
+import com.mjw.mjwservice.common.utility.Utils;
 import com.mjw.mjwservice.holidays.entity.HolidayDb;
 import com.mjw.mjwservice.holidays.entity.LocationPriceProjection;
 import com.mjw.mjwservice.holidays.mapper.HolidayMapper;
 import com.mjw.mjwservice.holidays.model.Holiday;
+import com.mjw.mjwservice.holidays.model.HolidaySearchRequest;
+import com.mjw.mjwservice.holidays.model.HolidaySearchResponse;
 import com.mjw.mjwservice.holidays.model.Itinerary;
 import com.mjw.mjwservice.holidays.repository.HolidayRepository;
+import com.mjw.mjwservice.holidays.repository.HolidaySpecification;
 import com.mjw.mjwservice.holidays.service.HolidayService;
 import com.mjw.mjwservice.holidays.service.ItineraryService;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -47,15 +52,43 @@ public class HolidayServiceImpl implements HolidayService {
     @Transactional
     public Holiday save(final Holiday holiday) {
         log.info("save holiday: {}", holiday);
-        final Itinerary itinerary = Optional.ofNullable(holiday.itinerary())
+        final HolidayDb savedHolidayDb = Optional.ofNullable(holiday.itinerary())
                 .map(Itinerary::id)
                 .map(itineraryService::getItineraryById)
-                .orElseGet(() -> itineraryService.save(holiday.itinerary()));
-        final Holiday updateHoliday = holiday.withItinerary(itinerary)
-                .withLocation(itinerary.location());
-        final HolidayDb holidayDb = holidayRepository.save(holidayMapper.toDatabase(updateHoliday));
+                .or(() -> Optional.of(itineraryService.save(holiday.itinerary())))
+                .map(itinerary -> holiday.withItinerary(itinerary)
+                        .withLocation(itinerary.location()))
+                .map(holidayMapper::toDatabase)
+                .map(holidayDb -> holidayDb.addHolidayThemes(holidayDb.getHolidayThemes()))
+                .map(holidayRepository::save)
+                .orElseThrow(() -> new IllegalStateException("Failed to save holiday"));
 
-        return holidayMapper.toModel(holidayDb);
+        return holidayMapper.toModel(savedHolidayDb);
+    }
+
+    @Override
+    @Transactional
+    public Holiday update(final Holiday holiday) {
+        log.info("update holiday: {}", holiday);
+
+        // Get existing holiday
+        final HolidayDb existingHoliday = holidayRepository.findById(holiday.id())
+                .orElseThrow(() -> new IllegalStateException("Holiday not found with id: " + holiday.id()));
+
+
+        // Merge
+        final Holiday updatedHoliday = holidayMapper.merge(holiday, holidayMapper.toModel(existingHoliday).toBuilder());
+
+        final HolidayDb existingHolidayDb = Optional.of(updatedHoliday)
+                .map(holidayMapper::toDatabase)
+                .map(this::updateItineraryIdentifier)
+                .map(holidayDb -> holidayDb.addHolidayThemes(holidayDb.getHolidayThemes()))
+                .orElseThrow();
+
+        // Save
+        final HolidayDb saved = holidayRepository.save(existingHolidayDb);
+
+        return holidayMapper.toModel(saved);
     }
 
     @Override
@@ -82,7 +115,7 @@ public class HolidayServiceImpl implements HolidayService {
                 .heroImageUrl(Optional.ofNullable(dashboardConfigMap.get(HERO_SECTION))
                         .map(DashboardConfig::dashboardData)
                         .filter(dashboardData -> !dashboardData.isEmpty())
-                        .map(dashboardData -> dashboardData.get(0).imageUrl())
+                        .map(dashboardData -> dashboardData.getFirst().imageUrl())
                         .orElse("https://ik.imagekit.io/r4qffffod/Locations/image2.jpg?updatedAt=1741208339318"))
                 .topDestinations(populatePriceLocation(dashboardConfigMap.get(Section.TOP_DESTINATIONS)))
                 .topPackages(populateTopPackages(dashboardConfigMap.get(Section.TOP_PACKAGES)))
@@ -90,10 +123,34 @@ public class HolidayServiceImpl implements HolidayService {
                         populatePriceLocation(dashboardConfigMap.get(Section.INTERNATIONAL_DESTINATIONS)))
                 .unexploredDestinations(
                         populatePriceLocation(dashboardConfigMap.get(Section.UNEXPLORED_DESTINATIONS)))
-                .holidayThemes(dashboardConfigMap.get(Section.TOP_ATTRACTIONS).dashboardData())
+                .themedDestinations(dashboardConfigMap.get(Section.THEMED_DESTINATIONS).dashboardData())
                 .reviews(reviewService.getReviews())
                 .build();
 
+    }
+
+    // Replace the old getHolidays method with this one
+    @Override
+    @Transactional(readOnly = true) // Add transactional annotation
+    public HolidaySearchResponse search(final HolidaySearchRequest searchRequest) {
+        log.info("Searching holidays with criteria: {}", searchRequest);
+
+        final String heroImageUrl = "hello;";
+
+        final Specification<HolidayDb> spec = HolidaySpecification.findByCriteria(searchRequest);
+
+        final List<Holiday> holidays = holidayRepository.findAll(spec)
+                .stream()
+                .map(holidayMapper::toModel)
+                .toList();
+        return HolidaySearchResponse.builder().holidays(holidays).build();
+    }
+
+    @Override
+    public Holiday getHolidayById(final Long id) {
+        return holidayRepository.findById(id)
+                .map(holidayMapper::toModel)
+                .orElseThrow(() -> new RuntimeException("Holiday not found"));
     }
 
     private List<DashboardData> populateTopPackages(final DashboardConfig dashboardConfig) {
@@ -117,6 +174,17 @@ public class HolidayServiceImpl implements HolidayService {
                 .toList();
 
 
+    }
+
+    private HolidayDb updateItineraryIdentifier(final HolidayDb holidayDb) {
+        holidayDb.getItinerary().setIdentifier(
+                Utils.itineraryIdentifier(
+                        holidayDb.getLocation().getCityCode(),
+                        holidayDb.getLocation().getCountryCode(),
+                        holidayDb.getItinerary().getDuration(),
+                        holidayDb.getItinerary().getName()
+                ));
+        return holidayDb;
     }
 
     @SneakyThrows
@@ -170,6 +238,11 @@ public class HolidayServiceImpl implements HolidayService {
                             .displayName(projection.getDisplayName())
                             .price(projection.getStandardPrice())
                             .imageUrl(data.imageUrl())
+                            .displayTarget(DashboardData.DisplayTarget.valueOf(projection.getType()))
+                            .cityCode(Objects.nonNull(projection.getCityCode()) ? projection.getCityCode() : null)
+                            .stateCode(Objects.nonNull(projection.getStateCode()) ? projection.getStateCode() : null)
+                            .countryCode(Objects.nonNull(projection.getCountryCode()) ? projection.getCountryCode() :
+                                    null)
                             .order(data.order())
                             .build();
 
@@ -185,6 +258,7 @@ public class HolidayServiceImpl implements HolidayService {
             case STATE -> String.join("-", data.displayTarget().name(), data.stateCode(),
                     data.countryCode());
             case COUNTRY -> String.join("-", data.displayTarget().name(), data.countryCode());
+            case THEME -> String.join("-", data.displayTarget().name(), data.theme().name());
         };
 
     }
