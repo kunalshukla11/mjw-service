@@ -1,6 +1,7 @@
 package com.mjw.mjwservice.holidays.controller;
 
 import com.mjw.mjwservice.common.model.dashboard.HolidayDashboard;
+import com.mjw.mjwservice.common.service.LocationService;
 import com.mjw.mjwservice.holidays.model.Holiday;
 import com.mjw.mjwservice.holidays.model.HolidaySearchRequest;
 import com.mjw.mjwservice.holidays.model.HolidaySearchResponse;
@@ -31,6 +32,7 @@ import java.util.List;
 public class HolidayController {
 
     private final HolidayServiceImpl holidayService;
+    private final LocationService locationService;
     private final ItineraryService itineraryService;
 
 
@@ -76,6 +78,11 @@ public class HolidayController {
     public Holiday get(final @PathVariable Long id) {
         log.info("get holidays by id: {}", id);
         return holidayService.getHolidayById(id);
+    }
+
+    @GetMapping(path = "/get/image", produces = "application/json")
+    public String getImage() {
+        return locationService.fetchHeroImage("BOM", "MH", "IN", null);
     }
 
 }

@@ -1,5 +1,6 @@
 package com.mjw.mjwservice.common.service;
 
+import com.mjw.mjwservice.common.model.DisplayTarget;
 import com.mjw.mjwservice.common.model.Location;
 import com.mjw.mjwservice.holidays.model.HolidaySearchRequest;
 
@@ -13,7 +14,7 @@ public interface LocationService {
 
     Location getLocationById(Long id);
 
-    String getHeroImageUrlByHolidayRequest(HolidaySearchRequest holidaySearchRequest);
+    String fetchHeroImage(String cityCode, String stateCode, String countryCode, DisplayTarget displayTarget);
 
 
 }

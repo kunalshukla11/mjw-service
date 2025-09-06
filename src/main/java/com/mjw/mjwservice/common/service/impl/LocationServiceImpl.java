@@ -2,14 +2,17 @@ package com.mjw.mjwservice.common.service.impl;
 
 import com.mjw.mjwservice.common.entity.LocationDb;
 import com.mjw.mjwservice.common.mapper.LocationMapper;
+import com.mjw.mjwservice.common.model.DisplayTarget;
 import com.mjw.mjwservice.common.model.Location;
 import com.mjw.mjwservice.common.repository.LocationRepository;
 import com.mjw.mjwservice.common.service.LocationService;
 import com.mjw.mjwservice.holidays.model.HolidaySearchRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -47,9 +50,11 @@ public class LocationServiceImpl implements LocationService {
     }
 
     @Override
-    public String getHeroImageUrlByHolidayRequest(final HolidaySearchRequest holidaySearchRequest) {
-
-        return "";
+    public String fetchHeroImage(final String cityCode, final String stateCode, final String countryCode,
+                                 final DisplayTarget displayTarget) {
+        return Arrays.stream(locationRepository
+                .getImagesUrlByCityStateCountry("BOM", "MH", "IN"))
+                .findFirst().orElse("");
     }
 
 }

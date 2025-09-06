@@ -1,5 +1,6 @@
 package com.mjw.mjwservice.holidays.service.impl;
 
+import com.mjw.mjwservice.common.model.DisplayTarget;
 import com.mjw.mjwservice.common.model.dashboard.HolidayDashboard;
 import com.mjw.mjwservice.common.model.dashboard.Section;
 import com.mjw.mjwservice.common.model.dashboard.config.DashboardConfig;
@@ -75,7 +76,6 @@ public class HolidayServiceImpl implements HolidayService {
         final HolidayDb existingHoliday = holidayRepository.findById(holiday.id())
                 .orElseThrow(() -> new IllegalStateException("Holiday not found with id: " + holiday.id()));
 
-
         // Merge
         final Holiday updatedHoliday = holidayMapper.merge(holiday, holidayMapper.toModel(existingHoliday).toBuilder());
 
@@ -102,14 +102,10 @@ public class HolidayServiceImpl implements HolidayService {
     @Transactional(readOnly = true)
     public HolidayDashboard holidayDashboard() {
 
-
         final Map<Section, DashboardConfig> dashboardConfigMap = dashboardConfigService
                 .getByType(DashboardConfig.Type.HOLIDAYS)
                 .stream()
                 .collect(Collectors.toMap(DashboardConfig::section, Function.identity()));
-
-
-
 
         return HolidayDashboard.builder()
                 .heroImageUrl(Optional.ofNullable(dashboardConfigMap.get(HERO_SECTION))
@@ -173,7 +169,6 @@ public class HolidayServiceImpl implements HolidayService {
                 })
                 .toList();
 
-
     }
 
     private HolidayDb updateItineraryIdentifier(final HolidayDb holidayDb) {
@@ -182,8 +177,7 @@ public class HolidayServiceImpl implements HolidayService {
                         holidayDb.getLocation().getCityCode(),
                         holidayDb.getLocation().getCountryCode(),
                         holidayDb.getItinerary().getDuration(),
-                        holidayDb.getItinerary().getName()
-                ));
+                        holidayDb.getItinerary().getName()));
         return holidayDb;
     }
 
@@ -202,7 +196,6 @@ public class HolidayServiceImpl implements HolidayService {
                         .stream()
                         .filter(string -> string.startsWith("CITY-"))
                         .toList()));
-
 
         final CompletableFuture<List<LocationPriceProjection>> stateFuture = CompletableFuture.supplyAsync(
                 () -> holidayRepository.findLowestPriceByState(dashboardDataMap.keySet()
@@ -226,30 +219,36 @@ public class HolidayServiceImpl implements HolidayService {
                 .map(projection -> {
                     final String key = switch (projection.getType()) {
                         case "CITY" -> String.join("-", "CITY",
-                                projection.getCityCode(), projection.getStateCode(), projection.getCountryCode());
+                                projection.getCityCode(), projection.getStateCode(),
+                                projection.getCountryCode());
                         case "STATE" -> String.join("-", "STATE",
                                 projection.getStateCode(), projection.getCountryCode());
                         case "COUNTRY" -> String.join("-", "COUNTRY",
                                 projection.getCountryCode());
-                        default -> throw new IllegalStateException("Unexpected value: " + projection.getType());
+                        default -> throw new IllegalStateException(
+                                "Unexpected value: " + projection.getType());
                     };
                     final DashboardData data = dashboardDataMap.get(key);
                     return DashboardData.builder()
                             .displayName(projection.getDisplayName())
                             .price(projection.getStandardPrice())
                             .imageUrl(data.imageUrl())
-                            .displayTarget(DashboardData.DisplayTarget.valueOf(projection.getType()))
-                            .cityCode(Objects.nonNull(projection.getCityCode()) ? projection.getCityCode() : null)
-                            .stateCode(Objects.nonNull(projection.getStateCode()) ? projection.getStateCode() : null)
-                            .countryCode(Objects.nonNull(projection.getCountryCode()) ? projection.getCountryCode() :
-                                    null)
+                            .displayTarget(DisplayTarget.valueOf(projection.getType()))
+                            .cityCode(Objects.nonNull(projection.getCityCode())
+                                    ? projection.getCityCode()
+                                    : null)
+                            .stateCode(Objects.nonNull(projection.getStateCode())
+                                    ? projection.getStateCode()
+                                    : null)
+                            .countryCode(Objects.nonNull(projection.getCountryCode())
+                                    ? projection.getCountryCode()
+                                    : null)
                             .order(data.order())
                             .build();
 
                 }).sorted(Comparator.comparing(DashboardData::order))
                 .toList();
     }
-
 
     private String generateKey(final DashboardData data) {
         return switch (data.displayTarget()) {
