@@ -20,17 +20,31 @@ public class HeroImageServiceImpl implements HeroImageService {
     @Override
     public String fetchHeroImage(final HolidaySearchRequest holidaySearchRequest) {
 
+        String heroImageUrl;
+
         log.info("fetch hero image for holiday search request: {}", holidaySearchRequest);
         if (Objects.nonNull(holidaySearchRequest.cityCode())) {
+           heroImageUrl = locationService.fetchHeroImageByCity(holidaySearchRequest.cityCode(),
+                    holidaySearchRequest.stateCode(),
+                    holidaySearchRequest.countryCode());
 
         } else if (Objects.nonNull(holidaySearchRequest.stateCode())) {
+            heroImageUrl = locationService.fetchHeroImageByState(holidaySearchRequest.stateCode(),
+                    holidaySearchRequest.countryCode());
 
         } else if (Objects.nonNull(holidaySearchRequest.countryCode())) {
-
+            heroImageUrl = locationService.fetchHeroImageByCountry(holidaySearchRequest.countryCode());
         } else {
+            heroImageUrl = "";
+        }
+        if(heroImageUrl.isBlank()) {
+            log.error("No hero image found for holiday search request: {}", holidaySearchRequest);
             return "";
+        } else {
+            log.info("Found hero image url: {} for holiday search request: {}", heroImageUrl, holidaySearchRequest);
         }
         return "";
+
 
 
     }

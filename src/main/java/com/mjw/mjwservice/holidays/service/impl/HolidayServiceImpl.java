@@ -17,6 +17,7 @@ import com.mjw.mjwservice.holidays.model.HolidaySearchResponse;
 import com.mjw.mjwservice.holidays.model.Itinerary;
 import com.mjw.mjwservice.holidays.repository.HolidayRepository;
 import com.mjw.mjwservice.holidays.repository.HolidaySpecification;
+import com.mjw.mjwservice.holidays.service.HeroImageService;
 import com.mjw.mjwservice.holidays.service.HolidayService;
 import com.mjw.mjwservice.holidays.service.ItineraryService;
 import lombok.RequiredArgsConstructor;
@@ -48,6 +49,7 @@ public class HolidayServiceImpl implements HolidayService {
     private final HolidayMapper holidayMapper;
     private final ReviewService reviewService;
     private final DashboardConfigService dashboardConfigService;
+    private final HeroImageService heroImageService;
 
     @Override
     @Transactional
@@ -131,7 +133,7 @@ public class HolidayServiceImpl implements HolidayService {
     public HolidaySearchResponse search(final HolidaySearchRequest searchRequest) {
         log.info("Searching holidays with criteria: {}", searchRequest);
 
-        final String heroImageUrl = "hello;";
+        String heroImageUrl = heroImageService.fetchHeroImage(searchRequest);
 
         final Specification<HolidayDb> spec = HolidaySpecification.findByCriteria(searchRequest);
 
@@ -139,7 +141,7 @@ public class HolidayServiceImpl implements HolidayService {
                 .stream()
                 .map(holidayMapper::toModel)
                 .toList();
-        return HolidaySearchResponse.builder().holidays(holidays).build();
+        return HolidaySearchResponse.builder().holidays(holidays).heroImageUrl(heroImageUrl).build();
     }
 
     @Override

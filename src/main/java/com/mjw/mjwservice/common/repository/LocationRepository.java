@@ -16,6 +16,13 @@ public interface LocationRepository extends JpaRepository<LocationDb, Long> {
                                             @Param("stateCode") String stateCode,
                                             @Param("countryCode") String countryCode);
 
+    @Query(value = "SELECT images_url FROM mjw_service.location WHERE state_code = :stateCode AND country_code = :countryCode", nativeQuery = true)
+    String[] getImagesUrlByStateCountry(@Param("stateCode") String stateCode,
+                                            @Param("countryCode") String countryCode);
+
+    @Query(value = "SELECT images_url FROM mjw_service.location WHERE  country_code = :countryCode", nativeQuery = true)
+    String[] getImagesUrlByCountry(@Param("countryCode") String countryCode);
+
     @Query("select distinct i from LOCATION l join l.imagesUrl i where l.stateCode = :stateCode and l.countryCode = :countryCode")
     Set<String> getImagesUrlByStateCodeAndCountryCode(@Param("stateCode") String stateCode,
                                                       @Param("countryCode") String countryCode);

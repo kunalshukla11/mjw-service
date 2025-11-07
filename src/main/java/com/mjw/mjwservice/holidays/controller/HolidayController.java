@@ -80,9 +80,4 @@ public class HolidayController {
         return holidayService.getHolidayById(id);
     }
 
-    @GetMapping(path = "/get/image", produces = "application/json")
-    public String getImage() {
-        return locationService.fetchHeroImage("BOM", "MH", "IN", null);
-    }
-
 }

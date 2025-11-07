@@ -26,6 +26,7 @@ public class GlobalExceptionHandler {
         return ResponseEntity.unprocessableEntity()
                 .body(ErrorResponse.builder()
                         .message(exception.getMessage())
+                        .isHandled(true)
                         .validationResponse(exception.getValidationResponse())
                         .build());
     }
@@ -45,6 +46,7 @@ public class GlobalExceptionHandler {
                 .map(errorResponse -> ResponseEntity.badRequest().body(errorResponse))
                 .orElse(ResponseEntity.badRequest()
                         .body(ErrorResponse.builder()
+                                .isHandled(true)
                                 .message("Request Failed in Validation without error details")
                                 .build()));
     }
@@ -65,6 +67,7 @@ public class GlobalExceptionHandler {
                 .map(errorResponse -> ResponseEntity.badRequest().body(errorResponse))
                 .orElse(ResponseEntity.badRequest()
                         .body(ErrorResponse.builder()
+                                .isHandled(true)
                                 .message("Request Failed in Validation without error details")
                                 .build()));
     }

@@ -16,5 +16,11 @@ public interface LocationService {
 
     String fetchHeroImage(String cityCode, String stateCode, String countryCode, DisplayTarget displayTarget);
 
+    String fetchHeroImageByCity(String cityCode, String stateCode, String countryCode);
+
+    String fetchHeroImageByState(String stateCode, String countryCode);
+
+    String fetchHeroImageByCountry(String countryCode);
+
 
 }
