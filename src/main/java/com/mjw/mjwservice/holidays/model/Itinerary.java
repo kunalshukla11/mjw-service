@@ -13,6 +13,7 @@ public record Itinerary(
         @With
         Long id,
         @NotBlank String name,
+        Description description,
         @With
         @NotBlank String identifier,
         @NotNull Location location,
